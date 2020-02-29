@@ -1,10 +1,11 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
+import { viewer } from './queries/viewer';
 import test from './mutations/test';
 
 const query = new GraphQLObjectType({
   name: 'Query',
   fields: () => ({
-    test,
+    viewer,
   }),
 });
 

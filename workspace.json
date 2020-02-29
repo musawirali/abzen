@@ -14,9 +14,7 @@
             "outputPath": "dist/apps/admin-server",
             "main": "apps/admin-server/src/main.ts",
             "tsConfig": "apps/admin-server/tsconfig.app.json",
-            "assets": [
-              "apps/admin-server/src/assets"
-            ]
+            "assets": ["apps/admin-server/src/assets"]
           },
           "configurations": {
             "production": {
@@ -47,10 +45,7 @@
               "apps/admin-server/tsconfig.app.json",
               "apps/admin-server/tsconfig.spec.json"
             ],
-            "exclude": [
-              "**/node_modules/**",
-              "!apps/admin-server/**"
-            ]
+            "exclude": ["**/node_modules/**", "!apps/admin-server/**"]
           }
         },
         "test": {
@@ -59,6 +54,116 @@
             "jestConfig": "apps/admin-server/jest.config.js",
             "tsConfig": "apps/admin-server/tsconfig.spec.json",
             "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "admin-client": {
+      "root": "apps/admin-client",
+      "sourceRoot": "apps/admin-client/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/web:build",
+          "options": {
+            "outputPath": "dist/apps/admin-client",
+            "index": "apps/admin-client/src/index.html",
+            "main": "apps/admin-client/src/main.tsx",
+            "polyfills": "apps/admin-client/src/polyfills.ts",
+            "tsConfig": "apps/admin-client/tsconfig.app.json",
+            "assets": [
+              "apps/admin-client/src/favicon.ico",
+              "apps/admin-client/src/assets"
+            ],
+            "styles": ["apps/admin-client/src/styles.scss"],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/admin-client/src/environments/environment.ts",
+                  "with": "apps/admin-client/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "admin-client:build",
+            "proxyConfig": "apps/admin-client/proxy.conf.json"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "admin-client:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/admin-client/.eslintrc",
+            "tsConfig": [
+              "apps/admin-client/tsconfig.app.json",
+              "apps/admin-client/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/admin-client/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/admin-client/jest.config.js",
+            "tsConfig": "apps/admin-client/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "admin-client-e2e": {
+      "root": "apps/admin-client-e2e",
+      "sourceRoot": "apps/admin-client-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/admin-client-e2e/cypress.json",
+            "tsConfig": "apps/admin-client-e2e/tsconfig.e2e.json",
+            "devServerTarget": "admin-client:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "admin-client:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/admin-client-e2e/.eslintrc",
+            "tsConfig": ["apps/admin-client-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/admin-client-e2e/**"]
           }
         }
       }
@@ -80,9 +185,15 @@
     },
     "@nrwl/react": {
       "application": {
-        "linter": "eslint"
+        "style": "scss",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "scss"
       },
       "library": {
+        "style": "scss",
         "linter": "eslint"
       }
     },
