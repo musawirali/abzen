@@ -1,8 +1,71 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "admin-server": {
+      "root": "apps/admin-server",
+      "sourceRoot": "apps/admin-server/src",
+      "projectType": "application",
+      "prefix": "admin-server",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/admin-server",
+            "main": "apps/admin-server/src/main.ts",
+            "tsConfig": "apps/admin-server/tsconfig.app.json",
+            "assets": [
+              "apps/admin-server/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/admin-server/src/environments/environment.ts",
+                  "with": "apps/admin-server/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "admin-server:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "config": "apps/admin-server/.eslintrc",
+            "tsConfig": [
+              "apps/admin-server/tsconfig.app.json",
+              "apps/admin-server/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/admin-server/**"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/admin-server/jest.config.js",
+            "tsConfig": "apps/admin-server/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nrwl/node"
   },
   "schematics": {
     "@nrwl/workspace": {
@@ -56,5 +119,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "defaultProject": "admin-server"
 }
