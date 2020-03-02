@@ -1,5 +1,15 @@
 # Abzen
 
+- Run `yarn` to install packages
+- Install and run Redis
+- Install and run Postgres DB server
+- Create DB user: `abzen` with password `abzen`
+- Create DB: `abzen_dev`
+- Run migrations: `yarn run admin-server:migrate`
+- Start: `yarn start`
+
+# Nx
+
 This project was generated using [Nx](https://nx.dev).
 
 - [React](https://reactjs.org)
