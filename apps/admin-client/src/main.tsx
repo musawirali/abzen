@@ -2,12 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { BrowserRouter } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/react-hooks';
 
-import App from './app/app';
+import App from './containers/app/App';
+import { client } from './apollo';
 
 ReactDOM.render(
   <BrowserRouter>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </BrowserRouter>,
   document.getElementById('root')
 );
