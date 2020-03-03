@@ -29,6 +29,7 @@ const bootstrap = async () => {
     schema,
     playground: isDev,
     debug: isDev,
+    context: ic => ic.req,
   });
 
   // Create new Express app.

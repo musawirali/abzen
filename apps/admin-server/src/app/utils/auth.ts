@@ -10,7 +10,7 @@ import { User } from '../models/User';
  * @param password
  * @param done
  */
-const verifyFunc: VerifyFunction = (username, password, done) => {
+export const verifyFunc: VerifyFunction = (username, password, done) => {
   User.findOne({
     where: {
       username,

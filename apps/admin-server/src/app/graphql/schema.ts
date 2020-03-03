@@ -1,6 +1,8 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
+
 import { viewer } from './queries/viewer';
-import test from './mutations/test';
+
+import login from './mutations/login';
 
 const query = new GraphQLObjectType({
   name: 'Query',
@@ -12,7 +14,7 @@ const query = new GraphQLObjectType({
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
-    test,
+    login,
   }),
 });
 
