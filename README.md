@@ -3,8 +3,13 @@
 - Run `yarn` to install packages
 - Install and run Redis
 - Install and run Postgres DB server
-- Create DB user: `abzen` with password `abzen`
+- Create DB user: `abzen` with password `abzen`:
 - Create DB: `abzen_dev`
+   ```sh
+    $ psql postgres
+    postgres=# CREATE USER abzen WITH PASSWORD 'abzen';
+    postgres=# CREATE DATABASE abzen_dev OWNER abzen;
+    ```
 - Run migrations: `yarn run admin-server:migrate`
 - Start: `yarn start`
 
