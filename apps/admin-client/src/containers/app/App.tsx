@@ -25,7 +25,7 @@ export const App = () => {
     )
   }
 
-  const { user } = data.viewer;
+  const user = data.viewer?.user;
   // If the user is not logged in, redirect to the login page.
   if (location.pathname !== '/login' && !user) {
     const redirect = encodeURIComponent(`${location.pathname}${location.search}`);
@@ -35,7 +35,7 @@ export const App = () => {
   return (
     <div>
       <Switch>
-        <Route path="/" exact children={<Home user={user} />} />
+        <Route path="/" exact children={<Home user={user} refetch={refetch} />} />
         <Route path="/login" children={<Login user={user} refetch={refetch} />} />
         <Redirect to="/" />
       </Switch>

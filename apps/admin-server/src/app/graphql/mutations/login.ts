@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { AuthenticationError } from 'apollo-server';
 import { GraphQLString, GraphQLNonNull } from 'graphql';
 import { mutationWithClientMutationId, MutationConfig } from 'graphql-relay';
 import get from 'lodash/get';
@@ -18,6 +19,10 @@ interface LoginOutput {
   };
 }
 
+/**
+ * Mutation for logging a user in by verifying `username` and `password`, and
+ * setting the user in the current session.
+ */
 const config: MutationConfig = {
   name: 'Login',
   inputFields: {
@@ -37,7 +42,7 @@ const config: MutationConfig = {
   mutateAndGetPayload: ({ username, password }: LoginInput, ctx: Request) => new Promise<LoginOutput>((resv, rej) => {
     verifyFunc(username, password, (err, user, opts) => {
       if (err) rej(err);
-      if (!user) rej(get(opts, 'message') || 'Invalid credentials provided.');
+      if (!user) rej(new AuthenticationError(get(opts, 'message') || 'Invalid credentials provided.'));
 
       ctx.logIn(user, (sessionErr) => {
         if (sessionErr) rej(sessionErr);

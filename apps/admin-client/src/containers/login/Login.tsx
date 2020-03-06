@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 import { ApolloQueryResult } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
@@ -39,6 +39,12 @@ export const Login = (props: LoginPropsType) => {
     }
   }, [data, error, loading, props]);
 
+  // Format error message for display
+  const displayError = useMemo(() => {
+    if (!error) return null;
+    return (error.graphQLErrors[0] || error).message;
+  }, [error]);
+
   // Form submission handler.
   const onSubmit = useCallback((evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -46,7 +52,7 @@ export const Login = (props: LoginPropsType) => {
       variables: {
         input: { username, password },
       },
-    })
+    });
   }, [login, username, password]);
 
   // If user is logged in, redirect.
@@ -87,9 +93,9 @@ export const Login = (props: LoginPropsType) => {
         </button>
       </div>
 
-      { error &&
+      { displayError &&
         <div>
-          {error.message}
+          {displayError}
         </div>
       }
     </form>
