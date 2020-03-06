@@ -35,7 +35,7 @@ export const App = () => {
   return (
     <div>
       <Switch>
-        <Route path="/" exact children={<Home />} />
+        <Route path="/" exact children={<Home user={user} />} />
         <Route path="/login" children={<Login user={user} refetch={refetch} />} />
         <Redirect to="/" />
       </Switch>

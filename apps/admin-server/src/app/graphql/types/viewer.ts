@@ -1,8 +1,14 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID } from 'graphql';
 
+import { User as UserModel } from '../../models/User';
 import { User } from './user';
 
-export const Viewer = new GraphQLObjectType({
+export interface ViewerType {
+  id: 'viewer',
+  user: UserModel | null,
+}
+
+export const Viewer = new GraphQLObjectType<ViewerType>({
   name: 'Viewer',
   description: 'Authenticated user',
   fields: () => ({

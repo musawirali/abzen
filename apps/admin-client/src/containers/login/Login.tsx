@@ -4,11 +4,12 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import find from 'lodash/find';
 
+import { User } from '../app/graphql/user';
 import { ViewerQueryData } from '../app/graphql/viewer';
 import { LOGIN_MUTATION } from './graphql/login';
 
 interface LoginPropsType {
-  user: { id: string } | null;
+  user: User | null;
   refetch: () => Promise<ApolloQueryResult<ViewerQueryData>>;
 }
 
