@@ -25,7 +25,7 @@ export const App = () => {
     )
   }
 
-  const user = data.viewer?.user;
+  const user = data?.viewer?.user || null;
   // If the user is not logged in, redirect to the login page.
   if (location.pathname !== '/login' && !user) {
     const redirect = encodeURIComponent(`${location.pathname}${location.search}`);
