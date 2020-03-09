@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { ApolloQueryResult } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 
-import { ViewerQueryData } from '../../../app/graphql/viewer';
+import { ViewerQueryData } from '../../../../../app/graphql/viewer';
 import { LOGOUT_MUTATION } from './graphql/logout';
 
 interface LogoutPropsType {
