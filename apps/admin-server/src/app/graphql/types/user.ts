@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString } from 'graphql';
-import { User as UserModel } from '../../models/User';
+
+import { User as UserModel } from '../../models';
 
 export const User = new GraphQLObjectType<UserModel>({
   name: 'User',

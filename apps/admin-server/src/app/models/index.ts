@@ -4,6 +4,12 @@ import { Experiment } from '../models/Experiment';
 import { Project } from '../models/Project';
 import { User } from '../models/User';
 
+export * from '../models/Variation';
+export * from '../models/Goal';
+export * from '../models/Experiment';
+export * from '../models/Project';
+export * from '../models/User';
+
 export const models = [
   User,
   Project,

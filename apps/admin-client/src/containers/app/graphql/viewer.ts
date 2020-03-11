@@ -20,6 +20,12 @@ export const VIEWER_QUERY = gql`
     viewer {
       ...AppViewer
     }
+    experiments {
+      id
+      name
+      type
+      status
+    }
   }
 
   ${VIEWER_FRAGMENT}

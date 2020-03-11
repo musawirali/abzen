@@ -6,7 +6,7 @@ import get from 'lodash/get';
 
 import { verifyFunc } from '../../utils/auth';
 import { Viewer } from '../types/viewer';
-import { User } from '../../models/User';
+import { User } from '../../models';
 
 interface LoginInput {
   username: string;

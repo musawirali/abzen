@@ -1,6 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID } from 'graphql';
 
-import { User as UserModel } from '../../models/User';
+import { User as UserModel } from '../../models';
 import { User } from './user';
 
 export interface ViewerType {
