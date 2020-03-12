@@ -18,15 +18,15 @@ export const Experiments = () => {
 
   return (
     <Switch>
-      <Route path={makePath('')} exact strict>
+      <Route path={makePath()} exact strict>
         <ExperimentsList gotoCreate={() => { history.push(makePath('/create')); }} />
       </Route>
 
       <Route path={makePath('/create')}>
-        <CreateExperiment />
+        <CreateExperiment onCancel={() => { history.push(makePath()); }} />
       </Route>
 
-      <Redirect to={makePath('')}/>
+      <Redirect to={makePath()}/>
     </Switch>
   );
 };

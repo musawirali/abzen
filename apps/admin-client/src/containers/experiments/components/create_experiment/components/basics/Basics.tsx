@@ -1,29 +1,37 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import map from 'lodash/map';
 
-import { CREATE_EXPERIMENT_MUTATION } from './graphql/create_experiment';
+import { PROJECTS_QUERY, ProjectsQueryData } from './graphql/projects';
 
-export const Basics = () => {
-  const [name, setName] = useState('');
+export interface BasicInfo {
+  name: string;
+  projectID: number | null;
+}
+interface BasicsPropsType {
+  data: BasicInfo | null;
+  onNext: (data: BasicInfo) => void;
+  onCancel: () => void;
+}
 
-  // Login mutation and handler.
-  const [createExperiment, { data, error, loading }] = useMutation(CREATE_EXPERIMENT_MUTATION);
-  useEffect(() => {
-    if (data && !error && !loading) {
-      console.log(data);
+export const Basics = (props: BasicsPropsType) => {
+  const { data, onNext, onCancel } = props;
+  const [name, setName] = useState(data?.name || '');
+  const [projectID, setProjectID] = useState(`${data?.projectID || ''}`);
+
+  // Query to fetch the projects list.
+  const queryRes = useQuery<ProjectsQueryData>(PROJECTS_QUERY);
+  const projects = useMemo(() => {
+    if (queryRes.data && !queryRes.error && !queryRes.loading) {
+      return queryRes.data.projects;
     }
-  }, [data, error, loading]);
-
-  // Format error message for display
-  const displayError = useMemo(() => {
-    if (!error) return null;
-    return (error.graphQLErrors[0] || error).message;
-  }, [error]);
+    return [];
+  }, [queryRes]);
 
   /**
    * Input validation.
    */
-  const isValid = useCallback(() => {
+  const isValid = useMemo(() => {
     return name.trim() !== '';
   }, [name]);
 
@@ -32,20 +40,17 @@ export const Basics = () => {
    *
    * @param event
    */
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!isValid()) {
+    if (!isValid) {
       return;
     }
 
-    createExperiment({
-      variables: {
-        input: {
-          name,
-        },
-      },
-    })
-  };
+    onNext({
+      name: name.trim(),
+      projectID: projectID ? parseInt(projectID, 10) : null,
+    });
+  }, [isValid, onNext, name, projectID]);
 
   return (
     <div>
@@ -60,16 +65,33 @@ export const Basics = () => {
         </div>
 
         <div>
-          <button disabled={!isValid()}>
-            Continue
-          </button>
+          <div>Project</div>
+          <select
+            disabled={queryRes.loading}
+            onChange={(evt) => { setProjectID(evt.target.value); }}
+            value={projectID}
+          >
+            {/* While the project list is being loaded, we show this disabled option */}
+            { queryRes.loading && <option>Loading...</option>}
+
+            {/* If loading finished, show the project list */}
+            { !queryRes.loading && <option value="">--- No Project ---</option>}
+            { !queryRes.loading && map(projects, proj =>
+              <option key={proj.id} value={proj.id}>
+                {proj.name}
+              </option>
+            )}
+          </select>
         </div>
 
-        { displayError &&
-          <div>
-            {displayError}
-          </div>
-        }
+        <div>
+          <button disabled={!isValid}>
+            Continue
+          </button>
+          <button onClick={() => { onCancel(); }}>
+            Cancel & delete
+          </button>
+        </div>
       </form>
     </div>
   );

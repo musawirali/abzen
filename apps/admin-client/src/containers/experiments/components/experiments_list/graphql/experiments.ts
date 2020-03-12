@@ -6,6 +6,10 @@ export const EXPERIMENT_FRAGMENT = gql`
     name
     type
     status
+    project {
+      id
+      name
+    }
     updatedAt
   }
 `;
@@ -15,6 +19,10 @@ export interface Experiment {
   name: string;
   type: string;
   status: string;
+  project: {
+    id: number;
+    name: string;
+  } | null,
   updatedAt: string;
 }
 

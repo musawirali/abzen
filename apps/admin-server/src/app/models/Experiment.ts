@@ -95,7 +95,7 @@ export class Experiment extends Model<Experiment>{
     allowNull: true,
     field: 'archived_at',
   })
-  archived_at: Date;
+  archivedAt: Date;
 
   /**
    * Time stamps

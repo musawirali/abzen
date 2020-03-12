@@ -71,7 +71,7 @@ export class Goal extends Model<Goal>{
     allowNull: true,
     field: 'archived_at',
   })
-  archived_at: Date;
+  archivedAt: Date;
 
   /**
    * Time stamps

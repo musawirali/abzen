@@ -1,5 +1,7 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType } from 'graphql';
+
 import { Experiment as ExperimentModel, ExperimentType, ExperimentStatus } from '../../models';
+import { Project } from './project';
 
 export const GQLExperimentType = new GraphQLEnumType({
   name: 'ExperimentType',
@@ -33,6 +35,12 @@ export const Experiment = new GraphQLObjectType<ExperimentModel>({
     },
     status: {
       type: new GraphQLNonNull(GQLExperimentStatus),
+    },
+    project: {
+      type: Project,
+      resolve: async (src) => {
+        return src.$get('project');
+      },
     },
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),
