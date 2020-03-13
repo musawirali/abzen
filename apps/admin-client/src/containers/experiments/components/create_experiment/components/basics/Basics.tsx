@@ -6,7 +6,7 @@ import { PROJECTS_QUERY, ProjectsQueryData } from './graphql/projects';
 
 export interface BasicInfo {
   name: string;
-  projectID: number | null;
+  projectID: string | null;
 }
 interface BasicsPropsType {
   data: BasicInfo | null;
@@ -17,7 +17,7 @@ interface BasicsPropsType {
 export const Basics = (props: BasicsPropsType) => {
   const { data, onNext, onCancel } = props;
   const [name, setName] = useState(data?.name || '');
-  const [projectID, setProjectID] = useState(`${data?.projectID || ''}`);
+  const [projectID, setProjectID] = useState(data?.projectID || '');
 
   // Query to fetch the projects list.
   const queryRes = useQuery<ProjectsQueryData>(PROJECTS_QUERY);
@@ -48,7 +48,7 @@ export const Basics = (props: BasicsPropsType) => {
 
     onNext({
       name: name.trim(),
-      projectID: projectID ? parseInt(projectID, 10) : null,
+      projectID: projectID || null,
     });
   }, [isValid, onNext, name, projectID]);
 

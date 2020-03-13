@@ -15,7 +15,7 @@ export const EXPERIMENT_FRAGMENT = gql`
 `;
 
 export interface Experiment {
-  id: number;
+  id: string;
   name: string;
   type: string;
   status: string;

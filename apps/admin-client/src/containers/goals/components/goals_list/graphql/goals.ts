@@ -10,7 +10,7 @@ export const GOAL_FRAGMENT = gql`
 `;
 
 export interface Goal {
-  id: number;
+  id: string;
   name: string;
   activeExperimentsCount: number;
   allExperimentsCount: number;

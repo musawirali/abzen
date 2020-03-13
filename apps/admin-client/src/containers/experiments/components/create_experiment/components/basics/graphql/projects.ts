@@ -8,7 +8,7 @@ export const PROJECT_FRAGMENT = gql`
 `;
 
 export interface Project {
-  id: number;
+  id: string;
   name: string;
 }
 

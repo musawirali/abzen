@@ -1,4 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import map from 'lodash/map';
+import find from 'lodash/find';
+
+import { CREATE_EXPERIMENT_MUTATION, CreateExperimentMutationDataType } from './graphql/create_experiment';
+import { GOALS_QUERY } from '../../../goals/components/goals_list/graphql/goals';
+import { PROJECTS_QUERY } from '../../../projects/components/projects_list/graphql/projects';
+import { Experiment, EXPERIMENTS_QUERY } from '../experiments_list/graphql/experiments';
 
 import { Step } from './components/step/Step';
 import { StepContainer } from './components/step_container/StepContainer';
@@ -93,6 +101,82 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
     return !!basicInfo && !!variationInfo && !!goalInfo && !!trafficAllocationInfo;
   }, [basicInfo, variationInfo, goalInfo, trafficAllocationInfo]);
 
+  // Login mutation and handler.
+  const [createExperiment, { data, error, loading }] = useMutation<CreateExperimentMutationDataType>(CREATE_EXPERIMENT_MUTATION);
+  useEffect(() => {
+    if (data && !error && !loading) {
+      // TODO: This will take back to the experiment list.
+      // Maybe we want to go to the newly created experiment instead?
+      props.onCancel();
+    }
+  }, [data, error, loading, props]);
+
+  /**
+   * Create experiment backend API call.
+   */
+  const doCreateExperiment = useCallback(() => {
+    if (!isValid) {
+      return;
+    }
+
+    createExperiment({
+      refetchQueries: [{ query: PROJECTS_QUERY }, { query: GOALS_QUERY }],
+      variables: {
+        input: {
+          name: basicInfo?.name,
+          projectID: basicInfo?.projectID,
+          trafficAllocation: trafficAllocationInfo?.globalAllocation,
+          variations: map(variationInfo?.variations, (variation) => {
+            const varData = {
+              name: variation.name,
+              trafficAllocation: 0,
+            };
+            const alloc = find(trafficAllocationInfo?.allocations, talloc => talloc.variationID === variation.id);
+            if (alloc) {
+              varData.trafficAllocation = alloc.allocation;
+            }
+            return varData;
+          }),
+          goalIDs: map(goalInfo?.goals, 'id'),
+          primaryGoalID: goalInfo?.goals[goalInfo.primaryIdx].id,
+        },
+      },
+      update: (cache, { data }) => {
+        if (data) {
+          const { createExperiment } = data;
+          const { experiment } = createExperiment;
+          const query = EXPERIMENTS_QUERY;
+
+          let newExperiments: Experiment[] = [];
+          let writeCache = false;
+          try {
+            // This cache query can fail if the initial experiments list hasn't been fetched yet.
+            // In that case we don't need to add new experiment to cache. It will be there on the subsequent
+            // experiment list fetch.
+            const { experiments } = cache.readQuery<{ experiments: Experiment[] }>({ query }) || { experiments: [] };
+            newExperiments = [ ...experiments, experiment ];
+            writeCache = true;
+          } catch (err) {
+            writeCache = false;
+          }
+
+          if (writeCache) {
+            cache.writeQuery({
+              query,
+              data: { experiments: newExperiments },
+            });
+          }
+        }
+      },
+    });
+  }, [createExperiment, basicInfo, variationInfo, goalInfo, trafficAllocationInfo, isValid]);
+
+  // Format error message for display
+  const displayError = useMemo(() => {
+    if (!error) return null;
+    return (error.graphQLErrors[0] || error).message;
+  }, [error]);
+
   return (
     <div>
       Setup new experiment
@@ -182,13 +266,22 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
       { step === CreateExperimentStep.None &&
         <div className="mt-4">
           <div>Thats it for now!</div>
-          <button disabled={!isValid}>
+          <button
+            disabled={!isValid}
+            onClick={() => { doCreateExperiment(); }}
+          >
             Create experiment
           </button>
 
           <button onClick={onCancel}>
             Cancel & delete
           </button>
+
+          { displayError &&
+            <div>
+              {displayError}
+            </div>
+          }
         </div>
       }
     </div>
