@@ -57,7 +57,10 @@ export const Variations = (props: VariationsPropsType) => {
                     newVariations[idx] = evt.target.value;
                     setVariations(newVariations);
                   }}
-                /> { idx > 0 && <button
+                />
+                { idx > 0 &&
+                  <button
+                    type="button"
                     onClick={() => {
                       const newVariations = [...variations];
                       newVariations.splice(idx, 1);
@@ -86,7 +89,7 @@ export const Variations = (props: VariationsPropsType) => {
           <button disabled={!isValid}>
             Continue
           </button>
-          <button onClick={() => { onCancel(); }}>
+          <button type="button" onClick={() => { onCancel(); }}>
             Cancel & delete
           </button>
         </div>

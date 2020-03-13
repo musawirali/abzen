@@ -4,19 +4,19 @@ import Col from 'react-bootstrap/Col';
 import { useQuery } from '@apollo/react-hooks';
 import map from 'lodash/map';
 
-import { ProjectsQueryData, PROJECTS_QUERY } from './graphql/projects';
+import { GoalsQueryData, GOALS_QUERY} from './graphql/goals';
 
-interface ProjectsListPropsType {
+interface GoalsListPropsType {
   gotoCreate: () => void;
 }
 
 /**
- * View to display list of projects.
+ * View to display list of goals.
  */
-export const ProjectsList = (props: ProjectsListPropsType) => {
+export const GoalsList = (props: GoalsListPropsType) => {
   const { gotoCreate } = props;
 
-  const { loading, error, data } = useQuery<ProjectsQueryData>(PROJECTS_QUERY);
+  const { loading, error, data } = useQuery<GoalsQueryData>(GOALS_QUERY);
 
   if (loading) {
     return <div>Loading ...</div>;
@@ -34,7 +34,7 @@ export const ProjectsList = (props: ProjectsListPropsType) => {
     <div>
       <Row className="mt-4">
         <Col>
-          Projects
+          Goals
         </Col>
 
         <Col md={3}>
@@ -43,7 +43,7 @@ export const ProjectsList = (props: ProjectsListPropsType) => {
               gotoCreate();
             }}
           >
-            Create new project
+            Create new goal
           </button>
         </Col>
       </Row>
@@ -58,12 +58,12 @@ export const ProjectsList = (props: ProjectsListPropsType) => {
           </tr>
         </thead>
         <tbody>
-          { map(data?.projects || [], proj =>
-            <tr key={proj.id}>
-              <td>{proj.id}</td>
-              <td>{proj.name}</td>
-              <td>{proj.activeExperimentsCount}</td>
-              <td>{proj.allExperimentsCount}</td>
+          { map(data?.goals || [], goal =>
+            <tr key={goal.id}>
+              <td>{goal.id}</td>
+              <td>{goal.name}</td>
+              <td>{goal.activeExperimentsCount}</td>
+              <td>{goal.allExperimentsCount}</td>
             </tr>
           )}
         </tbody>

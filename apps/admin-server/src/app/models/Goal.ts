@@ -6,7 +6,7 @@ import { Experiment } from './Experiment';
 /**
  * Association table for Goals <-> Experiments
  */
-@Table({ tableName: 'experiment_goals '})
+@Table({ tableName: 'experiment_goals'})
 export class ExperimentGoal extends Model<ExperimentGoal> {
   /**
    * Experiment association

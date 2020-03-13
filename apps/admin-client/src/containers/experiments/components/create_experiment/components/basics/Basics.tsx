@@ -88,7 +88,7 @@ export const Basics = (props: BasicsPropsType) => {
           <button disabled={!isValid}>
             Continue
           </button>
-          <button onClick={() => { onCancel(); }}>
+          <button type="button" onClick={() => { onCancel(); }}>
             Cancel & delete
           </button>
         </div>
