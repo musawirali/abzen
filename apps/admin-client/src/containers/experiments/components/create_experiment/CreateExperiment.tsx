@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { Step } from './components/step/Step';
 import { StepContainer } from './components/step_container/StepContainer';
 import { Basics, BasicInfo } from './components/basics/Basics';
 import { Variations, VariationInfo } from './components/variations/Variations';
 import { Goals, GoalInfo } from './components/goals/Goals';
-import { TrafficAllocation } from './components/traffic_allocation/TrafficAllocation';
+import { TrafficAllocation, TrafficAllocationInfo } from './components/traffic_allocation/TrafficAllocation';
 import { StatisticalSignificance } from './components/statistical_significance/StatisticalSignificance';
 
 enum CreateExperimentStep {
+  None,
   Basics,
   Variations,
   Goals,
@@ -31,6 +32,7 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
   const [basicInfo, setBasicInfo] = useState<BasicInfo | null>(null);
   const [variationInfo, setVariationInfo] = useState<VariationInfo | null>(null);
   const [goalInfo, setGoalInfo] = useState<GoalInfo | null>(null);
+  const [trafficAllocationInfo, setTrafficAllocationInfo] = useState<TrafficAllocationInfo | null>(null);
 
   const gotoStep = useCallback((nextStep: CreateExperimentStep) => {
     switch (nextStep) {
@@ -53,11 +55,14 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
         }
         break;
       case CreateExperimentStep.StatiscalSignificance:
+        if (trafficAllocationInfo !== null) {
+          setStep(nextStep);
+        }
         break;
       default:
         break;
     }
-  }, [setStep, basicInfo, variationInfo, goalInfo]);
+  }, [setStep, basicInfo, variationInfo, goalInfo, trafficAllocationInfo]);
 
   const onBasicNext = useCallback((data: BasicInfo) => {
     setBasicInfo(data);
@@ -73,6 +78,20 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
     setGoalInfo(data);
     setStep(CreateExperimentStep.TrafficAllocation);
   }, [setGoalInfo, setStep]);
+
+  const onTrafficAllocationNext = useCallback((data: TrafficAllocationInfo) => {
+    setTrafficAllocationInfo(data);
+    setStep(CreateExperimentStep.StatiscalSignificance);
+  }, [setTrafficAllocationInfo, setStep]);
+
+  const onStatisticalSignificanceNext = useCallback(() => {
+    setStep(CreateExperimentStep.None);
+  }, [setStep]);
+
+  // Check if all data is available to create experiment
+  const isValid = useMemo(() => {
+    return !!basicInfo && !!variationInfo && !!goalInfo && !!trafficAllocationInfo;
+  }, [basicInfo, variationInfo, goalInfo, trafficAllocationInfo]);
 
   return (
     <div>
@@ -135,7 +154,12 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
             active={step === CreateExperimentStep.TrafficAllocation}
             onClick={() => { gotoStep(CreateExperimentStep.TrafficAllocation); }}
           >
-            <TrafficAllocation />
+            <TrafficAllocation
+              variations={variationInfo?.variations || []}
+              data={trafficAllocationInfo}
+              onCancel={onCancel}
+              onNext={onTrafficAllocationNext}
+            />
           </Step>
         </StepContainer>
 
@@ -147,10 +171,26 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
             active={step === CreateExperimentStep.StatiscalSignificance}
             onClick={() => { gotoStep(CreateExperimentStep.StatiscalSignificance); }}
           >
-            <StatisticalSignificance/>
+            <StatisticalSignificance
+              onCancel={onCancel}
+              onNext={onStatisticalSignificanceNext}
+            />
           </Step>
         </StepContainer>
       </div>
+
+      { step === CreateExperimentStep.None &&
+        <div className="mt-4">
+          <div>Thats it for now!</div>
+          <button disabled={!isValid}>
+            Create experiment
+          </button>
+
+          <button onClick={onCancel}>
+            Cancel & delete
+          </button>
+        </div>
+      }
     </div>
   );
 };

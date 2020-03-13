@@ -1,10 +1,17 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import { v4 as uuid} from 'uuid';
 import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 
-export interface VariationInfo {
-  variations: string[];
+export interface NewVariation {
+  id: string;
+  name: string;
 }
+
+export interface VariationInfo {
+  variations: NewVariation[];
+}
+
 interface VariationsPropsType {
   data: VariationInfo | null;
   onNext: (data: VariationInfo) => void;
@@ -14,13 +21,16 @@ interface VariationsPropsType {
 export const Variations = (props: VariationsPropsType) => {
   const { onCancel, onNext, data } = props;
 
-  const [variations, setVariations] = useState<string[]>(data?.variations || ['']);
+  const [variations, setVariations] = useState<NewVariation[]>(data?.variations || [{
+    id: uuid(),
+    name: '',
+  }]);
 
   /**
    * Input validation.
    */
   const isValid = useMemo(() => {
-    const invalidIdx = findIndex(variations, variation => variation.trim() === '');
+    const invalidIdx = findIndex(variations, variation => variation.name.trim() === '');
     return invalidIdx < 0;
   }, [variations]);
 
@@ -36,7 +46,10 @@ export const Variations = (props: VariationsPropsType) => {
     }
 
     onNext({
-      variations: map(variations, variation => variation.trim()),
+      variations: map(variations, variation => ({
+        ...variation,
+        name: variation.name.trim(),
+      })),
     });
   }, [isValid, onNext, variations]);
 
@@ -46,15 +59,15 @@ export const Variations = (props: VariationsPropsType) => {
 
         <div>
           { map(variations, (variation, idx) =>
-            <div key={`var-${idx}`}>
+            <div key={variation.id}>
               <div>Variation #{idx + 1}</div>
               <div>
                 <input
                   type="text"
-                  value={variation}
+                  value={variation.name}
                   onChange={(evt) => {
                     const newVariations = [...variations];
-                    newVariations[idx] = evt.target.value;
+                    newVariations[idx].name = evt.target.value;
                     setVariations(newVariations);
                   }}
                 />
@@ -77,7 +90,7 @@ export const Variations = (props: VariationsPropsType) => {
           <div>
             <button
               onClick={() => {
-                setVariations([...variations, '']);
+                setVariations([...variations, { id: uuid(), name: '' } ]);
               }}
             >
               Add new variation
