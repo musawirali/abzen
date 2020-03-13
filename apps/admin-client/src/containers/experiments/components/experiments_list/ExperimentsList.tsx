@@ -54,6 +54,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
             <th>ID</th>
             <th>Name</th>
             <th>Type</th>
+            <th>Project</th>
             <th>Status</th>
             <th>Last change</th>
           </tr>
@@ -64,6 +65,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
               <td>{exp.id}</td>
               <td>{exp.name}</td>
               <td>{exp.type}</td>
+              <td>{exp.project?.name || '-'}</td>
               <td>{exp.status}</td>
               <td>{exp.updatedAt}</td>
             </tr>

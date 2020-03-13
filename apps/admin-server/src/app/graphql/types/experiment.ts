@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList, GraphQLInt } from 'graphql';
 
 import { Experiment as ExperimentModel, ExperimentType, ExperimentStatus } from '../../models';
 import { Project } from './project';

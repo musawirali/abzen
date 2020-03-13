@@ -20,7 +20,7 @@ export interface Experiment {
   type: string;
   status: string;
   project: {
-    id: number;
+    id: string;
     name: string;
   } | null,
   updatedAt: string;
