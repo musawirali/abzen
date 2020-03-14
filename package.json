@@ -6,6 +6,7 @@
     "nx": "nx",
     "start": "nx run-many --target=serve --all --parallel",
     "build": "nx affected:build --parallel",
+    "build:admin": "nx build admin-server && nx build admin-client",
     "lint": "nx affected:lint --parallel",
     "test": "nx test",
     "e2e": "nx e2e",

@@ -1,0 +1,25 @@
+name: Build and upload Docker image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build Docker
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build and publish Docker image
+      uses: HurricanKai/Publish-Docker-Github-Action@master
+      with:
+        name: musawirali/abzen
+        username: musawirali
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        snapshot: true
+        dockerfile: Dockerfile.admin

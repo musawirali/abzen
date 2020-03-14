@@ -47,7 +47,7 @@ const bootstrap = async () => {
   }));
 
   // Static directory.
-  // expressApp.use(express.static('public'));
+  expressApp.use(express.static('public'));
 
   // Body parser.
   expressApp.use(bodyParser.json());
