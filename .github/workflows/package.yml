@@ -14,10 +14,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Bump version and push tag
+      id: tagger-step
+      uses: anothrNick/github-tag-action@1.17.2
+      env:
+        DEFAULT_BUMP: patch
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+
     - name: Build and publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
-        name: musawirali/abzen
+        name: musawirali/abzen/${{ steps.tagger-step.outputs.new_tag }}
         username: musawirali
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
