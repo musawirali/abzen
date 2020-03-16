@@ -1,4 +1,4 @@
-import { Model, Table, Column, CreatedAt, UpdatedAt, ForeignKey, BelongsToMany } from 'sequelize-typescript';
+import { Model, Table, Column, CreatedAt, UpdatedAt, ForeignKey, BelongsToMany, BelongsTo, HasOne } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 import { Experiment } from './Experiment';
@@ -62,6 +62,8 @@ export class Goal extends Model<Goal>{
    */
   @BelongsToMany(() => Experiment, () => ExperimentGoal)
   experiments: Experiment[];
+
+  ExperimentGoal: ExperimentGoal | undefined;
 
   /**
    * Date archived

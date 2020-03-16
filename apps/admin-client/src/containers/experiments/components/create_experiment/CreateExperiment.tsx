@@ -12,7 +12,7 @@ import { Step } from './components/step/Step';
 import { StepContainer } from './components/step_container/StepContainer';
 import { Basics, BasicInfo } from './components/basics/Basics';
 import { Variations, VariationInfo } from './components/variations/Variations';
-import { Goals, GoalInfo } from './components/goals/Goals';
+import { Goals, GoalInfo } from '../goals/Goals';
 import { TrafficAllocation, TrafficAllocationInfo } from './components/traffic_allocation/TrafficAllocation';
 import { StatisticalSignificance } from './components/statistical_significance/StatisticalSignificance';
 

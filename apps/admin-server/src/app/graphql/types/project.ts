@@ -1,7 +1,6 @@
 import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt } from 'graphql';
 
-import { Project as ProjectModel } from '../../models';
-import { ExperimentStatus } from '../../models/Experiment';
+import { Project as ProjectModel, ExperimentStatus } from '../../models';
 
 export const Project = new GraphQLObjectType<ProjectModel>({
   name: 'Project',

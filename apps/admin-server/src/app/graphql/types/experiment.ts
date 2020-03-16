@@ -1,8 +1,9 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList } from 'graphql';
 
 import { Experiment as ExperimentModel, ExperimentType, ExperimentStatus } from '../../models';
 import { Project } from './project';
 import { Goal } from './goal';
+import { Variation } from './variation';
 
 export const GQLExperimentType = new GraphQLEnumType({
   name: 'ExperimentType',
@@ -47,6 +48,12 @@ export const Experiment = new GraphQLObjectType<ExperimentModel>({
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Goal))),
       resolve: async (src) => {
         return src.$get('goals');
+      },
+    },
+    variations: {
+      type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Variation))),
+      resolve: async (src) => {
+        return src.$get('variations');
       },
     },
     createdAt: {

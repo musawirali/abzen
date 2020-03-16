@@ -8,13 +8,14 @@ import { ExperimentsQueryData, EXPERIMENTS_QUERY} from './graphql/experiments';
 
 interface ExperimentsListPropsType {
   gotoCreate: () => void;
+  gotoExperiment: (id: string) => void;
 }
 
 /**
  * View to display list of experiments.
  */
 export const ExperimentsList = (props: ExperimentsListPropsType) => {
-  const { gotoCreate } = props;
+  const { gotoCreate, gotoExperiment } = props;
 
   const { loading, error, data } = useQuery<ExperimentsQueryData>(EXPERIMENTS_QUERY);
 
@@ -61,7 +62,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
         </thead>
         <tbody>
           { map(data?.experiments || [], exp =>
-            <tr key={exp.id}>
+            <tr key={exp.id} onClick={() => { gotoExperiment(exp.id); }}>
               <td>{exp.id}</td>
               <td>{exp.name}</td>
               <td>{exp.type}</td>

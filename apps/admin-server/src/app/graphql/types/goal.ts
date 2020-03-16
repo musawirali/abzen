@@ -1,7 +1,6 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
 
-import { Goal as GoalModel } from '../../models';
-import { ExperimentStatus } from '../../models/Experiment';
+import { Goal as GoalModel, ExperimentStatus } from '../../models';
 
 export const Goal = new GraphQLObjectType<GoalModel>({
   name: 'Goal',
@@ -32,6 +31,12 @@ export const Goal = new GraphQLObjectType<GoalModel>({
             archivedAt: null,
           },
         })
+      },
+    },
+    isPrimary: {
+      type: new GraphQLNonNull(GraphQLBoolean),
+      resolve: async ({ ExperimentGoal }) => {
+        return ExperimentGoal ? ExperimentGoal.isPrimary : false;
       },
     },
     archivedAt: {
