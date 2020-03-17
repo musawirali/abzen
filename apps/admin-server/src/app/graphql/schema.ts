@@ -10,6 +10,7 @@ import { searchGoals } from './queries/search_goals';
 import login from './mutations/login';
 import logout from './mutations/logout';
 import createExperiment from './mutations/create_experiment';
+import updateExperiment from './mutations/update_experiment';
 import createProject from './mutations/create_project';
 import createGoal from './mutations/create_goal';
 
@@ -31,6 +32,7 @@ const mutation = new GraphQLObjectType({
     login,
     logout,
     createExperiment,
+    updateExperiment,
     createProject,
     createGoal,
   }),

@@ -10,7 +10,7 @@ interface SidebarPropsType {
 }
 
 export const Sidebar = (props: SidebarPropsType) => {
-  const { path, experiment: { id, status, name, project, goals, variations } } = props;
+  const { path, experiment: { id, status, name, info, project, goals, variations } } = props;
 
   return (
     <div className="experiment-sidebar-sticky">
@@ -20,7 +20,7 @@ export const Sidebar = (props: SidebarPropsType) => {
 
       <div>
         <div>{name}</div>
-        <div>Some description</div>
+        <div>{info || '-'}</div>
         <div>{status} * {project?.name || 'No project'}</div>
         <div>Javascript ID: {id}</div>
         <div>

@@ -18,6 +18,7 @@ import { Experiment } from '../types/experiment';
 
 interface CreateExperimentInput {
   name: string;
+  info: string;
   projectID?: string | null;
   variations: {
     name: string;
@@ -41,6 +42,10 @@ const config: MutationConfig = {
     name: {
       type: new GraphQLNonNull(GraphQLString),
       description: 'Experiment name',
+    },
+    info: {
+      type: new GraphQLNonNull(GraphQLString),
+      description: 'Experiment description',
     },
     projectID: {
       type: GraphQLID,
@@ -78,7 +83,7 @@ const config: MutationConfig = {
   mutateAndGetPayload: async (args: CreateExperimentInput, ctx: Request): Promise<CreateExperimentOutput> => {
     if (!ctx.user) throw new AuthenticationError('Not logged in.');
 
-    const { name, projectID, variations, goalIDs, primaryGoalID, trafficAllocation } = args;
+    const { name, info, projectID, variations, goalIDs, primaryGoalID, trafficAllocation } = args;
 
     // Check projectID
     if (projectID) {
@@ -135,6 +140,8 @@ const config: MutationConfig = {
     try {
       experiment = await ExperimentModel.create({
         name,
+        info,
+        trafficAllocation,
         type: variations.length > 2 ? ExperimentType.Multivariate : ExperimentType.A_B,
         projectID,
       });

@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { MutationResult } from '@apollo/react-common';
 import { useQuery } from '@apollo/react-hooks';
 import map from 'lodash/map';
 import find from 'lodash/find';
+import filter from 'lodash/filter';
 import intersectionBy from 'lodash/intersectionBy';
 
 import { useClickOutside } from '../../../../hooks/click_outside';
@@ -15,15 +17,21 @@ interface GoalsPropsType {
   data: GoalInfo | null;
   onNext: (data: GoalInfo) => void;
   onCancel?: () => void;
+  updateRes?: MutationResult;
 }
 
 export const Goals = (props: GoalsPropsType) => {
-  const { data, onNext, onCancel } = props;
+  const { data, onNext, onCancel, updateRes } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearchRes, setShowSearchRes] = useState(false);
   const [selectedGoals, setSelectedGoals] = useState<Goal[]>(data?.goals || []);
   const [primaryIdx, setPrimaryIdx] = useState(data?.primaryIdx || 0);
+
+  /**
+   * Using the `onCancel` prop to determine if we're editing or creating.
+   */
+  const isEditing = useMemo(() => !onCancel, [onCancel]);
 
   /**
    * Reset the state with the original data.
@@ -33,6 +41,13 @@ export const Goals = (props: GoalsPropsType) => {
     setSelectedGoals(data?.goals || []);
     setPrimaryIdx(data?.primaryIdx || 0);
   }, [data, setSelectedGoals, setPrimaryIdx]);
+
+  // Reload original data when it changes.
+  useEffect(() => {
+    if (isEditing) {
+      reset();
+    }
+  }, [reset, isEditing]);
 
   /**
    * Track when click outside the search results menu happens so we can hide the menu.
@@ -65,11 +80,6 @@ export const Goals = (props: GoalsPropsType) => {
   }, [selectedGoals]);
 
   /**
-   * Using the `onCancel` prop to determine if we're editing or creating.
-   */
-  const isEditing = useMemo(() => !onCancel, [onCancel]);
-
-  /**
    * Check to see if there have been any changes from original data.
    */
   const hasChanges = useMemo(() => {
@@ -85,6 +95,24 @@ export const Goals = (props: GoalsPropsType) => {
     const currPrimary = selectedGoals[primaryIdx];
     return origPrimary ? origPrimary.id !== currPrimary.id : false;
   }, [data, selectedGoals, primaryIdx]);
+
+  /**
+   * Compute save button title
+   */
+  const saveBtnTitle = useMemo(() => {
+    if (!isEditing) {
+      return 'Continue';
+    }
+    return updateRes?.loading ? 'Saving...' : 'Save';
+  }, [isEditing, updateRes]);
+
+  /**
+   * Format error message for display
+   */
+  const displayError = useMemo(() => {
+    if (!updateRes?.error) return null;
+    return (updateRes.error.graphQLErrors[0] || updateRes.error).message;
+  }, [updateRes]);
 
   return (
     <div>
@@ -138,6 +166,13 @@ export const Goals = (props: GoalsPropsType) => {
                 Set as primary
               </button>
             }
+            <button
+              onClick={() => {
+                setSelectedGoals(filter(selectedGoals, sg => sg.id !== goal.id));
+              }}
+            >
+              X
+            </button>
           </div>
         )}
       </div>
@@ -146,7 +181,7 @@ export const Goals = (props: GoalsPropsType) => {
       { (!isEditing || hasChanges) &&
         <div>
           <button
-            disabled={!isValid}
+            disabled={!isValid || (updateRes && updateRes.loading)}
             onClick={() => {
               onNext({
                 goals: [...selectedGoals],
@@ -154,10 +189,11 @@ export const Goals = (props: GoalsPropsType) => {
               });
             }}
           >
-            { isEditing ? 'Save' : 'Continue' }
+            {saveBtnTitle}
           </button>
           <button
             type="button"
+            disabled={updateRes && updateRes.loading}
             onClick={() => {
               if (!isEditing && onCancel) {
                 onCancel();
@@ -168,6 +204,12 @@ export const Goals = (props: GoalsPropsType) => {
           >
             { !isEditing ? 'Cancel & delete' : 'Reset' }
           </button>
+        </div>
+      }
+
+      { displayError &&
+        <div>
+          Error: {displayError}
         </div>
       }
     </div>

@@ -1,4 +1,7 @@
-import { Model, Table, Column, CreatedAt, UpdatedAt, IsIn, BelongsTo, BelongsToMany, ForeignKey, HasMany } from 'sequelize-typescript';
+import {
+  Model, Table, Column, CreatedAt, UpdatedAt, IsIn, BelongsTo, BelongsToMany, ForeignKey, HasMany,
+  Min, Max,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 import { Project } from './Project';
@@ -26,6 +29,14 @@ export class Experiment extends Model<Experiment>{
     allowNull: false,
   })
   name: string;
+
+  /**
+   * Info
+   */
+  @Column({
+    type: DataTypes.TEXT,
+  })
+  info: string;
 
   /**
    * Type
@@ -60,6 +71,18 @@ export class Experiment extends Model<Experiment>{
     defaultValue: ExperimentStatus.NotStarted,
   })
   status: ExperimentStatus;
+
+  /**
+   * Traffic allocation
+   */
+  @Min(0)
+  @Max(1)
+  @Column({
+    type: DataTypes.FLOAT,
+    allowNull: true,
+    field: 'traffic_allocation',
+  })
+  trafficAllocation: number;
 
   /**
    * Project association

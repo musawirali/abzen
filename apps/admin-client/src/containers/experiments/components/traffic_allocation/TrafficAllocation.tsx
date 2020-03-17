@@ -1,15 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { MutationResult } from '@apollo/react-common';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Slider from 'rc-slider';
 import map from 'lodash/map';
 import sum from 'lodash/sum';
 import find from 'lodash/find';
+import intersectionBy from 'lodash/intersectionBy';
 
 import 'rc-slider/assets/index.css';
 
-import { formatInt } from '../../../../../../utils/format';
-import { NewVariation } from '../variations/Variations';
+import { formatInt } from '../../../../utils/format';
+import { NewVariation } from '../create_experiment/components/variations/Variations';
 
 interface NewAllocation {
   variationID: string;
@@ -23,13 +25,22 @@ interface TrafficAllocationPropsType {
   variations: NewVariation[];
   data: TrafficAllocationInfo | null;
   onNext: (data: TrafficAllocationInfo) => void;
-  onCancel: () => void;
+  onCancel?: () => void;
+  updateRes?: MutationResult;
 }
 
 export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
-  const { variations, data, onCancel, onNext } = props;
+  const { variations, data, onCancel, onNext, updateRes } = props;
   const [globalAlloc, setGlobalAlloc] = useState(data?.globalAllocation || 0);
 
+  /**
+   * Using the `onCancel` prop to determine if we're editing or creating.
+   */
+  const isEditing = useMemo(() => !onCancel, [onCancel]);
+
+  /**
+   * Compute initial traffic split.
+   */
   const initialSplit = useMemo(() => {
     const prevAllocs = data?.allocations || [];
 
@@ -55,10 +66,69 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
   }, [variations, data]);
   const [allocs, setAllocs] = useState(initialSplit);
 
-  // Check if distribution is valid
+  /**
+   * Reset the state with the original data.
+   * (Used during editing).
+   */
+  const reset = useCallback(() => {
+    setGlobalAlloc(data?.globalAllocation || 0);
+    setAllocs(initialSplit);
+  }, [data, setGlobalAlloc, setAllocs, initialSplit]);
+
+  // Reload original data when it changes.
+  useEffect(() => {
+    if (isEditing) {
+      reset();
+    }
+  }, [reset, isEditing]);
+
+  /**
+   * Check if distribution is valid
+   */
   const isValid = useMemo(() => {
     return sum(map(allocs, 'allocation')) === 100;
   }, [allocs]);
+
+  /**
+   * Check to see if there have been any changes from original data.
+   */
+  const hasChanges = useMemo(() => {
+    // Check global allocation
+    if (globalAlloc !== data?.globalAllocation) {
+      return true;
+    }
+
+    // Compare variation IDs
+    const orig = data?.allocations || [];
+    const curr = allocs;
+    if (orig.length !== curr.length || intersectionBy(orig, curr, 'variationID').length !== orig.length) {
+      return true;
+    }
+
+    // Compare allocations
+    return !!find(orig, (alloc) => {
+      const currAlloc = find(curr, calloc => calloc.variationID === alloc.variationID);
+      return !currAlloc || currAlloc.allocation !== alloc.allocation;
+    });
+  }, [data, globalAlloc, allocs]);
+
+  /**
+   * Compute save button title
+   */
+  const saveBtnTitle = useMemo(() => {
+    if (!isEditing) {
+      return 'Continue';
+    }
+    return updateRes?.loading ? 'Saving...' : 'Save';
+  }, [isEditing, updateRes]);
+
+  /**
+   * Format error message for display
+   */
+  const displayError = useMemo(() => {
+    if (!updateRes?.error) return null;
+    return (updateRes.error.graphQLErrors[0] || updateRes.error).message;
+  }, [updateRes]);
 
   return (
     <div>
@@ -116,27 +186,41 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
         </table>
       </div>
 
-      <div>
-        { !isValid &&
-          <div>
-            Must add up to 100
-          </div>
-        }
-        <button
-          disabled={!isValid}
-          onClick={() => {
-            onNext({
-              globalAllocation: globalAlloc,
-              allocations: [...allocs],
-            });
-          }}
-        >
-          Continue
-        </button>
-        <button type="button" onClick={() => { onCancel(); }}>
-          Cancel & delete
-        </button>
-      </div>
+      {/* Save and cancel / reset buttons */}
+      { (!isEditing || hasChanges) &&
+        <div>
+          <button
+            disabled={!isValid || (updateRes && updateRes.loading)}
+            onClick={() => {
+              onNext({
+                globalAllocation: globalAlloc,
+                allocations: [...allocs],
+              });
+            }}
+          >
+            {saveBtnTitle}
+          </button>
+          <button
+            type="button"
+            disabled={updateRes && updateRes.loading}
+            onClick={() => {
+              if (!isEditing && onCancel) {
+                onCancel();
+              } else {
+                reset();
+              }
+            }}
+          >
+            { !isEditing ? 'Cancel & delete' : 'Reset' }
+          </button>
+        </div>
+      }
+
+      { displayError &&
+        <div>
+          Error: {displayError}
+        </div>
+      }
     </div>
   );
 };

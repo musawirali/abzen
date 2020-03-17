@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList } from 'graphql';
+import { GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLString, GraphQLEnumType, GraphQLList, GraphQLInt } from 'graphql';
 
 import { Experiment as ExperimentModel, ExperimentType, ExperimentStatus } from '../../models';
 import { Project } from './project';
@@ -32,11 +32,18 @@ export const Experiment = new GraphQLObjectType<ExperimentModel>({
     name: {
       type: new GraphQLNonNull(GraphQLString),
     },
+    info: {
+      type: GraphQLString,
+    },
     type: {
       type: new GraphQLNonNull(GQLExperimentType),
     },
     status: {
       type: new GraphQLNonNull(GQLExperimentStatus),
+    },
+    trafficAllocation: {
+      type: new GraphQLNonNull(GraphQLInt),
+      resolve: src => Math.floor(src.trafficAllocation * 100),
     },
     project: {
       type: Project,

@@ -14,6 +14,7 @@ export const Variation = new GraphQLObjectType<VariationModel>({
     },
     trafficAllocation: {
       type: new GraphQLNonNull(GraphQLInt),
+      resolve: src => Math.floor(src.trafficAllocation * 100),
     },
     createdAt: {
       type: new GraphQLNonNull(GraphQLString),

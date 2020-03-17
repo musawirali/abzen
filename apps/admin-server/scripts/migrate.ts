@@ -1,4 +1,3 @@
-import map from 'lodash/map';
 import { Sequelize } from 'sequelize';
 import Umzug from 'umzug';
 import { initDB } from '../src/app/utils/db';
@@ -27,8 +26,7 @@ const migrate = async () => {
   umzug.on('reverting', logMigrationEvent('reverting'));
   umzug.on('reverted', logMigrationEvent('reverted'));
 
-  const migrations = await umzug.pending();
-  await umzug.execute({ method: 'up', migrations: map(migrations, 'file') });
+  await umzug.up();
 
   await sequelize.close();
 };

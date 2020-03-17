@@ -23,6 +23,9 @@ export const Variations = (props: VariationsPropsType) => {
 
   const [variations, setVariations] = useState<NewVariation[]>(data?.variations || [{
     id: uuid(),
+    name: 'Original',
+  }, {
+    id: uuid(),
     name: '',
   }]);
 
@@ -60,7 +63,9 @@ export const Variations = (props: VariationsPropsType) => {
         <div>
           { map(variations, (variation, idx) =>
             <div key={variation.id}>
-              <div>Variation #{idx + 1}</div>
+              <div>
+                Variation #{idx} {idx === 0 && '(Control)'}
+              </div>
               <div>
                 <input
                   type="text"
@@ -70,8 +75,9 @@ export const Variations = (props: VariationsPropsType) => {
                     newVariations[idx].name = evt.target.value;
                     setVariations(newVariations);
                   }}
+                  disabled={idx === 0}
                 />
-                { idx > 0 &&
+                { idx > 1 &&
                   <button
                     type="button"
                     onClick={() => {
