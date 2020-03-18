@@ -10,7 +10,7 @@ import { Experiment, EXPERIMENTS_QUERY } from '../experiments_list/graphql/exper
 
 import { Step } from './components/step/Step';
 import { StepContainer } from './components/step_container/StepContainer';
-import { Basics, BasicInfo } from './components/basics/Basics';
+import { Basics, BasicInfo } from '../basics/Basics';
 import { Variations, VariationInfo } from './components/variations/Variations';
 import { Goals, GoalInfo } from '../goals/Goals';
 import { TrafficAllocation, TrafficAllocationInfo } from '../traffic_allocation/TrafficAllocation';
@@ -124,6 +124,7 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
       variables: {
         input: {
           name: basicInfo?.name,
+          info: basicInfo?.info,
           projectID: basicInfo?.projectID,
           trafficAllocation: trafficAllocationInfo?.globalAllocation,
           variations: map(variationInfo?.variations, (variation) => {

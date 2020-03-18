@@ -54,13 +54,17 @@ export const Experiment = new GraphQLObjectType<ExperimentModel>({
     goals: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Goal))),
       resolve: async (src) => {
-        return src.$get('goals');
+        return src.$get('goals', {
+          order: [['createdAt', 'ASC']],
+        });
       },
     },
     variations: {
       type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Variation))),
       resolve: async (src) => {
-        return src.$get('variations');
+        return src.$get('variations', {
+          order: [['createdAt', 'ASC']],
+        });
       },
     },
     createdAt: {

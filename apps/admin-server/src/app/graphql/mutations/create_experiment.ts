@@ -141,7 +141,7 @@ const config: MutationConfig = {
       experiment = await ExperimentModel.create({
         name,
         info,
-        trafficAllocation,
+        trafficAllocation: trafficAllocation / 100,
         type: variations.length > 2 ? ExperimentType.Multivariate : ExperimentType.A_B,
         projectID,
       });

@@ -1,11 +1,12 @@
 import { Request } from 'express';
 import { AuthenticationError, UserInputError } from 'apollo-server';
-import { GraphQLNonNull, GraphQLList, GraphQLID, GraphQLInputObjectType, GraphQLInt } from 'graphql';
+import { GraphQLNonNull, GraphQLList, GraphQLID, GraphQLInputObjectType, GraphQLInt, GraphQLString } from 'graphql';
 import { mutationWithClientMutationId, MutationConfig } from 'graphql-relay';
 import { Op } from 'sequelize';
 import isNil from 'lodash/isNil';
 import find from 'lodash/find';
 import map from 'lodash/map';
+import each from 'lodash/each';
 import difference from 'lodash/difference';
 import includes from 'lodash/includes';
 import sumBy from 'lodash/sumBy';
@@ -19,10 +20,14 @@ import { Experiment } from '../types/experiment';
 
 interface UpdateExperimentInput {
   id: string;
+  name: string | null;
+  info: string | null;
+  projectID: string | null;
   goalIDs: string[] | null;
   primaryGoalID: string | null;
   variations: {
-    id: string;
+    id?: string;
+    name?: string;
     trafficAllocation: number;
   }[] | null,
   trafficAllocation: number | null;
@@ -41,6 +46,15 @@ const config: MutationConfig = {
     id: {
       type: new GraphQLNonNull(GraphQLID),
     },
+    name: {
+      type: GraphQLString,
+    },
+    info: {
+      type: GraphQLString,
+    },
+    projectID: {
+      type: GraphQLString,
+    },
     goalIDs: {
       description: 'List of goal IDs',
       type: new GraphQLList(new GraphQLNonNull(GraphQLID)),
@@ -54,7 +68,8 @@ const config: MutationConfig = {
       type: new GraphQLList(new GraphQLInputObjectType({
         name: 'UpdateExperimentVariationsInput',
         fields: {
-          id: { type: new GraphQLNonNull(GraphQLID) },
+          id: { type: GraphQLID },
+          name: { type: GraphQLString },
           trafficAllocation: { type: new GraphQLNonNull(GraphQLInt) },
         },
       })),
@@ -77,6 +92,7 @@ const config: MutationConfig = {
       id,
       goalIDs, primaryGoalID,
       variations, trafficAllocation,
+      name, info, projectID,
     } = args;
 
     // Create DB records
@@ -159,27 +175,71 @@ const config: MutationConfig = {
 
       const t = await sequelize.transaction();
       try {
+        // Destroy removed variations
+        const currentVariations = await experiment.$get('variations');
+        const destroyIDs: string[] = [];
+        each(currentVariations, (variation) => {
+          if (!find(variations, v => v.id === `${variation.id}`)) {
+            destroyIDs.push(variation.id);
+          }
+        });
+        // Must be left with at least 2 variations (1 original and 1 variation) after
+        // deleting.
+        if ((currentVariations.length - destroyIDs.length) < 2) {
+          throw new UserInputError(`Too many variations being removed: "${destroyIDs.join(',')}"`);
+        }
+        await VariationModel.destroy({
+          where: {
+            id: {
+              [Op.in]: destroyIDs,
+            },
+          },
+        });
+
+        // Update / create variation traffic allocations
+        await Promise.all(map(variations, async (variation) => {
+          if (variation.id) {
+            await VariationModel.update({
+              trafficAllocation: variation.trafficAllocation / 100,
+            }, {
+              where: {
+                id: variation.id,
+              },
+            });
+          } else {
+            await experiment.$create('variation', {
+              name: variation.name,
+              trafficAllocation: variation.trafficAllocation / 100,
+            });
+          }
+        }));
+
         // Update global traffic allocation
         await experiment.update({
           trafficAllocation: trafficAllocation / 100,
         });
-
-        // Update variation traffic allocations
-        await Promise.all(map(variations, variation => VariationModel.update({
-          trafficAllocation: variation.trafficAllocation / 100,
-        }, {
-          where: {
-            id: variation.id,
-          },
-        })));
-
-        // TODO: Variation adding/removing
 
         await t.commit();
       } catch (err) {
         await t.rollback();
         throw err;
       }
+    }
+
+    // Update settings
+    if (name || info || projectID) {
+      if (!name) {
+        throw new UserInputError('"name" must be specified.');
+      }
+      if (!info) {
+        throw new UserInputError('"info" must be specified.');
+      }
+
+      await experiment.update({
+        name,
+        info,
+        projectID,
+      });
     }
 
     return {

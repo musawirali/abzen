@@ -9,6 +9,7 @@ import findIndex from 'lodash/findIndex';
 import { Sidebar } from './components/sidebar/Sidebar';
 import { Goals, GoalInfo } from '../goals/Goals';
 import { TrafficAllocation, TrafficAllocationInfo } from '../traffic_allocation/TrafficAllocation';
+import { Basics, BasicInfo } from '../basics/Basics';
 
 import { ExperimentQueryData, EXPERIMENT_QUERY, UPDATE_EXPERIMENT } from './graphql/experiment';
 import './style.css';
@@ -67,9 +68,30 @@ export const Experiment = () => {
           id,
           variations: map(data.allocations, alloc => ({
             id: alloc.variationID,
+            name: alloc.variationName,
             trafficAllocation: alloc.allocation,
           })),
           trafficAllocation: data.globalAllocation,
+        },
+      },
+      refetchQueries: [{
+        query: EXPERIMENT_QUERY,
+        variables: { id },
+      }],
+    });
+  }, [id, updateMut]);
+
+  /**
+   * Function for updating basic info (calls mutation).
+   */
+  const updateSettings = useCallback((data: BasicInfo) => {
+    updateMut({
+      variables: {
+        input: {
+          id,
+          name: data.name,
+          info: data.info,
+          projectID: data.projectID,
         },
       },
       refetchQueries: [{
@@ -160,7 +182,15 @@ export const Experiment = () => {
           </Route>
 
           <Route path={makePath('/settings')}>
-            Settings
+            <Basics
+              onNext={updateSettings}
+              data={{
+                name: data.experiment.name,
+                info: data.experiment.info,
+                projectID: data.experiment.project?.id || null,
+              }}
+              updateRes={updateRes}
+            />
           </Route>
 
           <Route path={makePath('/history')}>

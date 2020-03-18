@@ -6,6 +6,7 @@ import Slider from 'rc-slider';
 import map from 'lodash/map';
 import sum from 'lodash/sum';
 import find from 'lodash/find';
+import cloneDeep from 'lodash/cloneDeep';
 import intersectionBy from 'lodash/intersectionBy';
 
 import 'rc-slider/assets/index.css';
@@ -14,7 +15,8 @@ import { formatInt } from '../../../../utils/format';
 import { NewVariation } from '../create_experiment/components/variations/Variations';
 
 interface NewAllocation {
-  variationID: string;
+  variationID?: string;
+  variationName?: string;
   allocation: number;
 }
 export interface TrafficAllocationInfo {
@@ -64,7 +66,28 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
 
     return splits;
   }, [variations, data]);
-  const [allocs, setAllocs] = useState(initialSplit);
+  const [allocs, setAllocs] = useState(cloneDeep(initialSplit));
+
+  /**
+   * Finds the variation object using the ID.
+   */
+  const getVariationName = useCallback((alloc: NewAllocation) => {
+    const { variationID } = alloc;
+    if (variationID) {
+      const variation = find(variations, variation => variation.id === variationID);
+      return variation?.name || '';
+    }
+    return alloc.variationName || '';
+  }, [variations]);
+
+  /**
+   * Remove variation
+   */
+  const removeVariation = useCallback((idx: number) => {
+    const newAllocs = [...allocs];
+    newAllocs.splice(idx, 1);
+    setAllocs(newAllocs);
+  }, [allocs, setAllocs]);
 
   /**
    * Reset the state with the original data.
@@ -72,7 +95,7 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
    */
   const reset = useCallback(() => {
     setGlobalAlloc(data?.globalAllocation || 0);
-    setAllocs(initialSplit);
+    setAllocs(cloneDeep(initialSplit));
   }, [data, setGlobalAlloc, setAllocs, initialSplit]);
 
   // Reload original data when it changes.
@@ -86,6 +109,10 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
    * Check if distribution is valid
    */
   const isValid = useMemo(() => {
+    if (find(allocs, alloc => !alloc.variationID && !alloc.variationName?.trim())) {
+      return false;
+    }
+
     return sum(map(allocs, 'allocation')) === 100;
   }, [allocs]);
 
@@ -162,28 +189,71 @@ export const TrafficAllocation = (props: TrafficAllocationPropsType) => {
             <tr>
               <th>Variation name</th>
               <th>Traffic allocation</th>
+              { isEditing && <th /> }
             </tr>
           </thead>
           <tbody>
-            { map(variations, (variation, idx) =>
-              <tr key={variation.id}>
-                <td>{variation.name}</td>
-                <td>
-                  <input
-                    type="text"
-                    value={allocs[idx].allocation}
-                    onChange={(evt) => {
-                      const val = formatInt(evt.target.value, 0, 100) || 0;
-                      const newAllocs = [...allocs];
-                      newAllocs[idx].allocation = val;
-                      setAllocs(newAllocs);
-                    }}
-                  />
-                </td>
-              </tr>
-            )}
+            { map(allocs, (alloc, idx) => {
+              const varName = getVariationName(alloc);
+              return (
+                <tr key={`var-${idx}`}>
+                  <td>
+                    { alloc.variationID && varName}
+                    { !alloc.variationID &&
+                      <input
+                        type="text"
+                        value={varName}
+                        onChange={(evt) => {
+                          const newAllocs = [...allocs];
+                          newAllocs[idx].variationName = evt.target.value;
+                          setAllocs(newAllocs);
+                        }}
+                      />
+                    }
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={alloc.allocation}
+                      onChange={(evt) => {
+                        const val = formatInt(evt.target.value, 0, 100) || 0;
+                        const newAllocs = [...allocs];
+                        newAllocs[idx].allocation = val;
+                        setAllocs(newAllocs);
+                      }}
+                    />
+                  </td>
+                  { isEditing && allocs.length > 2 && varName !== 'Original' &&
+                    <td>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          removeVariation(idx);
+                        }}
+                      >
+                        X
+                      </button>
+                    </td>
+                  }
+                </tr>
+              );
+            })}
           </tbody>
         </table>
+
+        <div>
+          <button
+            type="button"
+            onClick={() => {
+              setAllocs([...allocs, {
+                variationName: `Variation #${allocs.length}`,
+                allocation: 0,
+              }]);
+            }}
+          >
+            Add variation
+          </button>
+        </div>
       </div>
 
       {/* Save and cancel / reset buttons */}
