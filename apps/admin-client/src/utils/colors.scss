@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+
+//Color overrides
+$green:               #2AB87A !default;
+$green-highlight:     #EAF8F2 !default;
+$orange:              #FFA238 !default;
+$red:                 #F8647C !default;
+
+// Commented variables are not used in the UI
+$white:               #fff    !default;
+$gray-100:            #F9FBFA !default;
+// $gray-200:           #e9ecef !default;
+$gray-300:            #E9EBF0 !default;
+// $gray-400:           #ced4da !default;
+$gray-500:            #C4C9CE !default;
+$gray-600:            #626F82 !default;
+// $gray-700:           #495057 !default;
+$gray-800:            #343A43 !default;
+// $gray-900:           #212529 !default;
+// $black:              #000    !default;
+
+$primary:     $green !default;
+$secondary:   $gray-300 !default;
+
+
+// Table color overrides
+$table-head-bg: $gray-100 !default;
+$table-color: $gray-800 !default;
+$table-hover-bg: $green-highlight;
+
+
+// Tabs color overrides
+$nav-tabs-link-active-color: $green !default;
+
+
+
+// Fonts overrides
+$font-size-base: 0.9rem !default;
+$font-family-sans-serif:      Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$headings-font-weight: 300 !default;
+
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";

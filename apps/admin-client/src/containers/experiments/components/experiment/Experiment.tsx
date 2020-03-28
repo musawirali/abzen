@@ -11,6 +11,8 @@ import { Goals, GoalInfo } from '../goals/Goals';
 import { TrafficAllocation, TrafficAllocationInfo } from '../traffic_allocation/TrafficAllocation';
 import { Basics, BasicInfo } from '../basics/Basics';
 
+import Container from 'react-bootstrap/Container';
+
 import { ExperimentQueryData, EXPERIMENT_QUERY, UPDATE_EXPERIMENT } from './graphql/experiment';
 import './style.css';
 
@@ -144,21 +146,15 @@ export const Experiment = () => {
   }
 
   return (
-    <Row>
-      <Col
-        md={{ offset: 2, span: 2 }}
+    <div className="d-flex w-100">
+      <div
         className="experiment-sidebar"
       >
         <Sidebar experiment={data.experiment} path={makePath()} />
-      </Col>
+      </div>
 
       {/* Content */}
-      <Col
-        className="ml-sm-auto px-4"
-        md={7}
-        sm="auto"
-        lg={9}
-      >
+      <Container fluid className="pt-5">
         <Switch>
           <Route path={makePath()} exact strict>
             Experiment ID: {id}
@@ -199,7 +195,7 @@ export const Experiment = () => {
 
           <Redirect to={makePath()}/>
         </Switch>
-      </Col>
-    </Row>
+      </Container>
+    </div>
   );
 };

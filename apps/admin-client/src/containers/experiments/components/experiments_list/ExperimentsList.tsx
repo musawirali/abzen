@@ -1,8 +1,13 @@
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import Table from 'react-bootstrap/Table';
 import { useQuery } from '@apollo/react-hooks';
 import map from 'lodash/map';
+import Container from 'react-bootstrap/Container';
 
 import { ExperimentsQueryData, EXPERIMENTS_QUERY} from './graphql/experiments';
 
@@ -32,24 +37,47 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
   }
 
   return (
-    <div>
-      <Row className="mt-4">
-        <Col>
-          Experiments
-        </Col>
-
-        <Col md={3}>
-          <button
+    <Container fluid>
+      {/* TODO: THIS HAS TO BE A PROPER COMPONENT REUSED ACROSS ALL TOP LEVEL PAGES */}
+      <Row className="mt-5">
+        <Col className="d-flex justify-content-between">
+          <h4>
+            Experiments
+          </h4>
+          <Button
+            variant="primary"
             onClick={() => {
               gotoCreate();
             }}
           >
             Create new experiment
-          </button>
+          </Button>
         </Col>
       </Row>
 
-      <table className="table mt-4">
+      <Tabs defaultActiveKey="active" className="mt-5 mb-2" id="example">
+        <Tab eventKey="active" title="Active">
+        </Tab>
+        <Tab eventKey="archived" title="Archived">
+        </Tab>
+      </Tabs>
+      <div className="mt-4">
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          className="mr-1"
+        >
+              Project: All
+        </Button>
+        <Button
+          variant="outline-secondary"
+          size="sm"
+        >
+              Status: All
+        </Button>
+      </div>
+
+      <Table hover className="mt-4">
         <thead>
           <tr>
             <th>ID</th>
@@ -72,7 +100,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
             </tr>
           )}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Container>
   );
 };

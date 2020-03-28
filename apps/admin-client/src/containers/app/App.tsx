@@ -45,35 +45,25 @@ export const App = () => {
   }
 
   return (
-    <Container fluid>
-      <Row>
-        {/* Sidebar */}
-        <Col
-          md={2}
-          className="sidebar"
-        >
-          <Sidebar user={user} refetch={refetch} />
-        </Col>
+    <div className="d-flex d-row">
+      {/* Sidebar */}
+      <div
+        className="sidebar"
+      >
+        <Sidebar user={user} refetch={refetch} />
+      </div>
 
-        {/* Content */}
-        <Col
-          className="ml-sm-auto px-4"
-          md={9}
-          sm="auto"
-          lg={10}
-        >
-          <Switch>
-            <Route path="/" exact children={<Home />} />
-            <Route path="/experiments" children={<Experiments />} />
-            <Route path="/projects" children={<Projects />} />
-            <Route path="/goals" children={<Goals />} />
-            <Route path="/settings" children={<Settings />} />
-            <Route path="/login" children={<Login user={user} refetch={refetch} />} />
-            <Redirect to="/" />
-          </Switch>
-        </Col>
-      </Row>
-    </Container>
+      {/* Content */}
+      <Switch>
+        <Route path="/" exact children={<Home />} />
+        <Route path="/experiments" children={<Experiments />} />
+        <Route path="/projects" children={<Projects />} />
+        <Route path="/goals" children={<Goals />} />
+        <Route path="/settings" children={<Settings />} />
+        <Route path="/login" children={<Login user={user} refetch={refetch} />} />
+        <Redirect to="/" />
+      </Switch>
+    </div>
   );
 };
 

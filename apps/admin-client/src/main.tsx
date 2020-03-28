@@ -4,8 +4,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/react-hooks';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import App from './containers/app/App';
 import { client } from './apollo';
 
