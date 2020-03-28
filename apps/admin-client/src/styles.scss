@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import "./utils/colors";
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+.btn-outline-secondary {
+  color: $gray-600;
+}
+
+
+// Table styling overrides
+
+.table {
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+}
+
+.table thead th {
+  background-color: $gray-100;
+  color: $gray-600;
+  font-weight: 400;
+  padding: 0.4rem 0.75rem;
+  border-bottom: none;
+}
+
+// Tabs styling overrides
+
+.nav-link {
+  color: $gray-600;
+  &:hover {
+    color: $gray-800;
+  }
+}
+
+// General Styles
+.logo-sm {
+  width: 100px;
+  height: auto;
+}

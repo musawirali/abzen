@@ -1,5 +1,6 @@
 .experiment-sidebar {
-  position: fixed;
+  width: 256px;
+  min-width: 256px;
   top: 0;
   bottom: 0;
   left: 0;
