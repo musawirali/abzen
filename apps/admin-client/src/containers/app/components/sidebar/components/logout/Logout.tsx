@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { ApolloQueryResult } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import { Link } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
 
 import { ViewerQueryData } from '../../../../../app/graphql/viewer';
 import { LOGOUT_MUTATION } from './graphql/logout';
@@ -28,8 +29,6 @@ export const Logout = (props: LogoutPropsType) => {
   }, [logout]);
 
   return (
-    <Link onClick={onClick}>
-      Logout
-    </Link>
+    <Nav.Link onClick={onClick}>Logout</Nav.Link>
   );
 };

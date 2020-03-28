@@ -37,7 +37,7 @@ export const Sidebar = (props: SidebarPropsType) => {
         </Nav>
         <Nav defaultActiveKey="/home" className="flex-column">
           <Nav.Link href="/settings" disabled>{user.name}</Nav.Link>
-          <Nav.Link href="/logout"><Logout refetch={refetch} /></Nav.Link>
+          <Logout refetch={refetch} />
         </Nav>
         </>
       }

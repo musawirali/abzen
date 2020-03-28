@@ -55,7 +55,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
         </Col>
       </Row>
 
-      <Tabs defaultActiveKey="active" className="mt-5 mb-2">
+      <Tabs defaultActiveKey="active" className="mt-5 mb-2" id="example">
         <Tab eventKey="active" title="Active">
         </Tab>
         <Tab eventKey="archived" title="Archived">
