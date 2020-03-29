@@ -54,10 +54,6 @@ const bootstrap = async () => {
   expressApp.use(bodyParser.json());
   expressApp.use(bodyParser.urlencoded({ extended: true }));
 
-  // Set pug view engine.
-  expressApp.set('views', `${__dirname}/assets/views`);
-  expressApp.set('view engine', 'pug');
-
   // Add session management.
   const redisClient = redis.createClient({
     host: config.get('redis').host,
@@ -91,20 +87,19 @@ const bootstrap = async () => {
 
   // Add home route
   expressApp.get('/', (req, res) => {
-    console.log(req.user);
     res.send('ABZen');
   });
 
   // Admin routes
   expressApp.get('/admin', (req, res) => {
-    res.sendfile('public/admin/index.html');
+    res.sendFile('public/admin/index.html');
   });
   expressApp.get('/admin/*', (req, res) => {
-    res.sendfile('public/admin/index.html');
+    res.sendFile('public/admin/index.html');
   });
 
   // Add routes for serving the client script and API.
-  addServeRoutes(expressApp);
+  addServeRoutes(expressApp, `${__dirname}/assets/abzen.js`);
   
   // Wrap server in Terminus.
   const server = http.createServer(expressApp);

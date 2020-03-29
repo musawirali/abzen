@@ -8,6 +8,7 @@
     "start:docker": "docker build -t abzen . && docker run --rm --env-file=docker.env -it -p 4000:4000 abzen",
     "build": "nx affected:build --parallel",
     "build:admin": "nx build admin-server && nx build admin-client",
+    "build:serve": "tsc --build apps/serve/tsconfig.app.json && jsmin -o dist/apps/serve/abzen.js dist/apps/serve/main.js",
     "lint": "nx affected:lint --parallel",
     "test": "nx test",
     "e2e": "nx e2e",
@@ -52,6 +53,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@babel/helper-validator-identifier": "^7.9.0",
     "@nrwl/cypress": "9.0.4",
     "@nrwl/eslint-plugin-nx": "9.0.2",
     "@nrwl/jest": "9.0.2",
@@ -87,6 +89,7 @@
     "eslint": "6.1.0",
     "eslint-config-prettier": "6.0.0",
     "jest": "24.1.0",
+    "jsmin": "^1.0.1",
     "prettier": "1.18.2",
     "ts-jest": "24.0.0",
     "ts-node": "^8.6.2",
