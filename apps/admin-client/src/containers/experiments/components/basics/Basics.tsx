@@ -128,7 +128,13 @@ export const Basics = (props: BasicsPropsType) => {
       <Form onSubmit={onSubmit}>
         <Form.Group controlId="formTitle">
           <Form.Label>Title</Form.Label>
-          <Form.Control type="text" value={name} onChange={(evt) => { setName(evt.target.value); }} placeholder="e.g. Landing page title change" />
+          <Form.Control
+            type="text"
+            as="input"
+            value={name}
+            onChange={(evt) => { setName(evt.currentTarget.value); }}
+            placeholder="e.g. Landing page title change"
+          />
           <Form.Text className="text-muted">
             What should your test be called?
           </Form.Text>
@@ -136,7 +142,14 @@ export const Basics = (props: BasicsPropsType) => {
 
         <Form.Group controlId="formDescription">
           <Form.Label>Description</Form.Label>
-          <Form.Control type="text" value={info} onChange={(evt) => { setInfo(evt.target.value); }} placeholder="e.g. Three new title variations that are focusing on the FOMO principle" as="textarea" rows="3"/>
+          <Form.Control
+            type="text"
+            as="textarea"
+            value={info}
+            onChange={(evt) => { setInfo(evt.currentTarget.value); }}
+            placeholder="e.g. Three new title variations that are focusing on the FOMO principle"
+            rows="3"
+          />
           <Form.Text className="text-muted">
             Briefly describe the changes that you're making.
           </Form.Text>
@@ -147,7 +160,7 @@ export const Basics = (props: BasicsPropsType) => {
           <Form.Control
             as="select"
             disabled={queryRes.loading}
-            onChange={(evt) => { setProjectID(evt.target.value); }}
+            onChange={(evt) => { setProjectID(evt.currentTarget.value); }}
             value={projectID}
           >
             {/* While the project list is being loaded, we show this disabled option */}
