@@ -12,6 +12,7 @@ import expressWinston from 'express-winston';
 
 import config from './config';
 import schema from './app/graphql/schema';
+import { addServeRoutes } from './serve/controller';
 import { initDB } from './app/utils/db';
 import { initAuth } from './app/utils/auth';
 
@@ -53,6 +54,10 @@ const bootstrap = async () => {
   expressApp.use(bodyParser.json());
   expressApp.use(bodyParser.urlencoded({ extended: true }));
 
+  // Set pug view engine.
+  expressApp.set('views', `${__dirname}/assets/views`);
+  expressApp.set('view engine', 'pug');
+
   // Add session management.
   const redisClient = redis.createClient({
     host: config.get('redis').host,
@@ -87,8 +92,19 @@ const bootstrap = async () => {
   // Add home route
   expressApp.get('/', (req, res) => {
     console.log(req.user);
-    res.send('Hello world');
+    res.send('ABZen');
   });
+
+  // Admin routes
+  expressApp.get('/admin', (req, res) => {
+    res.sendfile('public/admin/index.html');
+  });
+  expressApp.get('/admin/*', (req, res) => {
+    res.sendfile('public/admin/index.html');
+  });
+
+  // Add routes for serving the client script and API.
+  addServeRoutes(expressApp);
   
   // Wrap server in Terminus.
   const server = http.createServer(expressApp);

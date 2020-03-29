@@ -1,6 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import map from 'lodash/map';

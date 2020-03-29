@@ -1,6 +1,4 @@
 import React from 'react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
@@ -10,6 +8,8 @@ import map from 'lodash/map';
 import Container from 'react-bootstrap/Container';
 
 import { ExperimentsQueryData, EXPERIMENTS_QUERY} from './graphql/experiments';
+
+import { Header } from '../../../../components/header/Header';
 
 interface ExperimentsListPropsType {
   gotoCreate: () => void;
@@ -38,22 +38,7 @@ export const ExperimentsList = (props: ExperimentsListPropsType) => {
 
   return (
     <Container fluid>
-      {/* TODO: THIS HAS TO BE A PROPER COMPONENT REUSED ACROSS ALL TOP LEVEL PAGES */}
-      <Row className="mt-5">
-        <Col className="d-flex justify-content-between">
-          <h4>
-            Experiments
-          </h4>
-          <Button
-            variant="primary"
-            onClick={() => {
-              gotoCreate();
-            }}
-          >
-            Create new experiment
-          </Button>
-        </Col>
-      </Row>
+      <Header gotoCreate={gotoCreate} />
 
       <Tabs defaultActiveKey="active" className="mt-5 mb-2" id="example">
         <Tab eventKey="active" title="Active">

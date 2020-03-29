@@ -5,6 +5,7 @@
   "scripts": {
     "nx": "nx",
     "start": "nx run-many --target=serve --all --parallel",
+    "start:docker": "docker build -t abzen . && docker run --rm --env-file=docker.env -it -p 4000:4000 abzen",
     "build": "nx affected:build --parallel",
     "build:admin": "nx build admin-server && nx build admin-client",
     "lint": "nx affected:lint --parallel",

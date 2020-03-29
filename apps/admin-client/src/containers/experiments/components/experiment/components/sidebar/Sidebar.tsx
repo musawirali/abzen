@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
@@ -31,6 +30,7 @@ export const Sidebar = (props: SidebarPropsType) => {
             <FormControl
               value={id}
               aria-describedby="basicaddon2"
+              readOnly
             />
             <InputGroup.Append>
               <Button variant="outline-secondary">Copy</Button>

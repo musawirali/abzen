@@ -10,4 +10,4 @@ RUN mv dist/apps/admin-client public
 
 EXPOSE 4000
 
-CMD ["node", "dist/apps/admin-server/main.js"]
+ENTRYPOINT ["node", "dist/apps/admin-server/main.js"]

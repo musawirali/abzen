@@ -2,10 +2,6 @@ import React from 'react';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
 import { VIEWER_QUERY, ViewerQueryData } from './graphql/viewer';
 import { Login } from '../login/Login';
 import { Home } from '../home/Home';

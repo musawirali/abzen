@@ -8,7 +8,7 @@ import App from './containers/app/App';
 import { client } from './apollo';
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/admin">
     <ApolloProvider client={client}>
       <App />
     </ApolloProvider>
