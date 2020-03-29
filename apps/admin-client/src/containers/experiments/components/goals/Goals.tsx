@@ -122,7 +122,7 @@ export const Goals = (props: GoalsPropsType) => {
     <div>
       {/* Goal search input and menu */}
 
-      <Form.Group controlId="formTitle">
+      <Form.Group controlId="goals">
         <Form.Label>Select goal(s)</Form.Label>
         <Form.Control type="search" value={searchTerm} onFocus={() => { setShowSearchRes(true); }} onChange={(evt) => { setSearchTerm(evt.target.value); }} />
       </Form.Group>

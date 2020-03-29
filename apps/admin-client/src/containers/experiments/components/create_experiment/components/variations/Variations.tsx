@@ -65,7 +65,7 @@ export const Variations = (props: VariationsPropsType) => {
 
       <Form onSubmit={onSubmit}>
         { map(variations, (variation, idx) =>
-          <Form.Group controlId="formBasicEmail">
+          <Form.Group controlId="variation">
             <Form.Label>Variation #{idx} {idx === 0 && '(Control)'}</Form.Label>
             <div className="d-flex">
               <Form.Control

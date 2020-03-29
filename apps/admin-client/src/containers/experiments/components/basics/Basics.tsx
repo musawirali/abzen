@@ -155,8 +155,8 @@ export const Basics = (props: BasicsPropsType) => {
           </Form.Text>
         </Form.Group>
 
-        <Form.Group controlId="exampleForm.ControlSelect1">
-          <Form.Label>Example select</Form.Label>
+        <Form.Group controlId="projectSelect">
+          <Form.Label>Select project</Form.Label>
           <Form.Control
             as="select"
             disabled={queryRes.loading}
@@ -167,7 +167,7 @@ export const Basics = (props: BasicsPropsType) => {
             { queryRes.loading && <option>Loading...</option>}
 
             {/* If loading finished, show the project list */}
-            { !queryRes.loading && <option value="">Select project</option>}
+            { !queryRes.loading && <option value="">No project selected</option>}
             { !queryRes.loading && map(projects, proj =>
               <option key={proj.id} value={proj.id}>
                 {proj.name}
