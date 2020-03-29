@@ -3,6 +3,10 @@ import { useQuery } from '@apollo/react-hooks';
 import { MutationResult } from '@apollo/react-common';
 import map from 'lodash/map';
 
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 import { PROJECTS_QUERY, ProjectsQueryData } from './graphql/projects';
 
 export interface BasicInfo {
@@ -121,25 +125,27 @@ export const Basics = (props: BasicsPropsType) => {
 
   return (
     <div>
-      <form onSubmit={onSubmit}>
-        <div>
-          <div>Title</div>
-          <input
-            type="text"
-            value={name}
-            onChange={(evt) => { setName(evt.target.value); }}
-          />
-          <div>
-            <textarea
-              value={info}
-              onChange={(evt) => { setInfo(evt.target.value); }}
-            />
-          </div>
-        </div>
+      <Form onSubmit={onSubmit}>
+        <Form.Group controlId="formTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control type="text" value={name} onChange={(evt) => { setName(evt.target.value); }} placeholder="e.g. Landing page title change" />
+          <Form.Text className="text-muted">
+            What should your test be called?
+          </Form.Text>
+        </Form.Group>
 
-        <div>
-          <div>Project</div>
-          <select
+        <Form.Group controlId="formDescription">
+          <Form.Label>Description</Form.Label>
+          <Form.Control type="text" value={info} onChange={(evt) => { setInfo(evt.target.value); }} placeholder="e.g. Three new title variations that are focusing on the FOMO principle" as="textarea" rows="3"/>
+          <Form.Text className="text-muted">
+            Briefly describe the changes that you're making.
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Example select</Form.Label>
+          <Form.Control
+            as="select"
             disabled={queryRes.loading}
             onChange={(evt) => { setProjectID(evt.target.value); }}
             value={projectID}
@@ -148,45 +154,39 @@ export const Basics = (props: BasicsPropsType) => {
             { queryRes.loading && <option>Loading...</option>}
 
             {/* If loading finished, show the project list */}
-            { !queryRes.loading && <option value="">--- No Project ---</option>}
+            { !queryRes.loading && <option value="">Select project</option>}
             { !queryRes.loading && map(projects, proj =>
               <option key={proj.id} value={proj.id}>
                 {proj.name}
               </option>
             )}
-          </select>
+          </Form.Control>
+        </Form.Group>
+        <div className="d-flex justify-content-between w-100"> 
+          <Button variant="primary" type="submit" disabled={!isValid || (updateRes && updateRes.loading)}>
+            Continue
+          </Button>
+          <Button
+            variant="outline-secondary"
+            type="submit"
+            disabled={updateRes && updateRes.loading}
+            onClick={() => {
+              if (!isEditing && onCancel) {
+                onCancel();
+              } else {
+                reset();
+              }
+            }}
+          >
+            { !isEditing ? 'Cancel & delete' : 'Reset' }
+          </Button>
         </div>
-
-        {/* Save and cancel / reset buttons */}
-        { (!isEditing || hasChanges) &&
-          <div>
-            <button
-              disabled={!isValid || (updateRes && updateRes.loading)}
-            >
-              {saveBtnTitle}
-            </button>
-            <button
-              type="button"
-              disabled={updateRes && updateRes.loading}
-              onClick={() => {
-                if (!isEditing && onCancel) {
-                  onCancel();
-                } else {
-                  reset();
-                }
-              }}
-            >
-              { !isEditing ? 'Cancel & delete' : 'Reset' }
-            </button>
-          </div>
-        }
-
         { displayError &&
-          <div>
+          <div className="text-danger mt-1">
             Error: {displayError}
           </div>
         }
-      </form>
+      </Form>
     </div>
   );
 };
