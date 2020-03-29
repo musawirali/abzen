@@ -3,10 +3,17 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { ApolloQueryResult } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import find from 'lodash/find';
+import Form from 'react-bootstrap/Form';
+import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
 
 import { User } from '../app/graphql/user';
 import { ViewerQueryData } from '../app/graphql/viewer';
 import { LOGIN_MUTATION } from './graphql/login';
+
+import './style.scss';
+import Logo from '../../assets/images/logo.svg';
+
 
 interface LoginPropsType {
   user: User | null;
@@ -68,36 +75,32 @@ export const Login = (props: LoginPropsType) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <div>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={onUsernameChange}
-        />
-      </div>
+    <div className="login-container flex-column">
+      <Image src={Logo} fluid className="logo-md mb-5"/>
 
-      <div>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={onPasswordChange}
-        />
-      </div>
+      <Form onSubmit={onSubmit} className="login-container__form">
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Username</Form.Label>
+          <Form.Control type="text" placeholder="e.g. tester123" value={username} onChange={onUsernameChange}/>
+        </Form.Group>
 
-      <div>
-        <button disabled={loading}>
-          Log in
-        </button>
-      </div>
-
-      { displayError &&
-        <div>
-          {displayError}
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control value={password} type="password" placeholder="Password" onChange={onPasswordChange}/>
+        </Form.Group>
+        { displayError &&
+          <Form.Text className="text-danger mb-2">
+            {displayError}
+          </Form.Text>
+        }
+        <Button variant="primary" type="submit" block disabled={loading}>
+          Login
+        </Button>
+        <div className="text-muted text-center mt-3">
+            Don't have an account? <span className="text-primary">Signup</span>
         </div>
-      }
-    </form>
+
+      </Form>
+    </div>
   );
 };
