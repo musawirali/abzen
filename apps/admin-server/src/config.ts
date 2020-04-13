@@ -20,6 +20,18 @@ const config = convict({
     default: 4000,
     env: 'PORT',
   },
+  apiHost: {
+    doc: 'Hostname from which this server will be accessible',
+    format: String,
+    default: 'http://localhost:4000',
+    env: 'API_HOST',
+  },
+  corsOrigins: {
+    doc: 'Array of hosts to whitelist for receiving experiment tracking',
+    format: Array,
+    default: ['*'],
+    env: 'CORS_ORIGINS',
+  },
   secretKey: {
     doc: 'Secret key used for encryption',
     format: String,
