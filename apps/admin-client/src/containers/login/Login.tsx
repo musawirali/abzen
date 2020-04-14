@@ -79,12 +79,12 @@ export const Login = (props: LoginPropsType) => {
       <Image src={Logo} fluid className="logo-md mb-5"/>
 
       <Form onSubmit={onSubmit} className="login-container__form">
-        <Form.Group controlId="formBasicEmail">
+        <Form.Group controlId="username">
           <Form.Label>Username</Form.Label>
           <Form.Control type="text" placeholder="e.g. tester123" value={username} onChange={onUsernameChange}/>
         </Form.Group>
 
-        <Form.Group controlId="formBasicPassword">
+        <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control value={password} type="password" placeholder="Password" onChange={onPasswordChange}/>
         </Form.Group>

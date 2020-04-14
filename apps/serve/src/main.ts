@@ -57,9 +57,9 @@ const init = ({ experiments, apiURL }: Options) => {
    *
    * @param experimentID - ID of the experiment.
    * @param goalID - ID of the goal to track.
-   * @param experimentID - (Optional) ID of the variation that converted.
+   * @param variationID - (Optional) ID of the variation that converted.
    *                      If not provided, uses the assigned variation.
-   * @param cb - (Optional) Callback tfor checking if call succeeded or failed.
+   * @param cb - (Optional) Callback for checking if call succeeded or failed.
    */
   const trackGoal = (experimentID: string, goalID: string, variationID?: string, cb?: EventCB) => {
     send({
@@ -76,7 +76,7 @@ const init = ({ experiments, apiURL }: Options) => {
    * same variations will be provided.
    *
    * @param id - An identifier for the user.
-   * @param cb - (Optional) Callback tfor checking if call succeeded or failed.
+   * @param cb - (Optional) Callback for checking if call succeeded or failed.
    */
   const identify = (id: string, cb?: EventCB) => {
     send({

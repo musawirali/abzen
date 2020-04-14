@@ -9,6 +9,10 @@ import intersectionBy from 'lodash/intersectionBy';
 import { useClickOutside } from '../../../../hooks/click_outside';
 import { Goal, GoalSearchQueryData, GOALS_QUERY } from './graphql/goals';
 
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 export interface GoalInfo {
   goals: Goal[];
   primaryIdx: number;
@@ -117,65 +121,75 @@ export const Goals = (props: GoalsPropsType) => {
   return (
     <div>
       {/* Goal search input and menu */}
-      <div>
-        Search for a goal
-        <div>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(evt) => { setSearchTerm(evt.target.value); }}
-            onFocus={() => { setShowSearchRes(true); }}
-          />
-        </div>
 
-        <div ref={menuRef}>
-          { showSearchRes &&
-            <div>
-              { goals.length === 0 && 'No goals found!'}
-              { goals.length > 0 &&
-                <ul>
-                  { map(goals, goal =>
-                    <li
-                      key={goal.id}
-                      onClick={() => {
-                        if (!find(selectedGoals, sg => sg.id === goal.id)) {
-                          setSelectedGoals([...selectedGoals, goal]);
-                        }
-                        setShowSearchRes(false);
-                      }}
-                    >
-                      {goal.name}
-                    </li>
-                  )}
-                </ul>
-              }
-            </div>
-          }
-        </div>
+      <Form.Group controlId="goals">
+        <Form.Label>Select goal(s)</Form.Label>
+        <Form.Control type="search" value={searchTerm} onFocus={() => { setShowSearchRes(true); }} onChange={(evt) => { setSearchTerm(evt.target.value); }} />
+      </Form.Group>
+      <div ref={menuRef}>
+        { showSearchRes &&
+          <div>
+            { goals.length === 0 && 'No goals found!'}
+            { goals.length > 0 &&
+              <ul className="list-group">
+                { map(goals, goal =>
+                  <li
+                    className="list-group-item"
+                    key={goal.id}
+                    onClick={() => {
+                      if (!find(selectedGoals, sg => sg.id === goal.id)) {
+                        setSelectedGoals([...selectedGoals, goal]);
+                      }
+                      setShowSearchRes(false);
+                    }}
+                  >
+                    {goal.name}
+                  </li>
+                )}
+              </ul>
+            }
+          </div>
+        }
       </div>
 
       {/* List of selected goals */}
       <div>
-        <div>Selected goals</div>
+        <div className="mb-2">Selected goals</div>
 
         { map(selectedGoals, (goal, idx) =>
-          <div key={`selected-${goal.id}`}>
-            {goal.name} { idx === primaryIdx && '*' }
-            { idx !== primaryIdx &&
-              <button onClick={() => { setPrimaryIdx(idx); }}>
+          <div className="d-flex mb-2">
+            <div key={`selected-${goal.id}`} className="card d-flex w-100">
+              <div className="pt-2 pb-2 pl-4 pr-4">
+                {goal.name} <span className="text-muted">{ idx === primaryIdx && '(Primary goal)' }</span>
+              </div>            
+            </div>
+
+            <div className="d-flex flex-shrink-0">
+              { idx !== primaryIdx &&
+                <Button
+                className="ml-2"
+                variant="outline-dark"
+                onClick={() => { setPrimaryIdx(idx); }}
+              >
                 Set as primary
-              </button>
+              </Button>
             }
-            <button
-              onClick={() => {
-                setSelectedGoals(filter(selectedGoals, sg => sg.id !== goal.id));
-              }}
-            >
-              X
-            </button>
+
+              <Button
+                className="ml-2"
+                variant="outline-danger"
+                onClick={() => {
+                  setSelectedGoals(filter(selectedGoals, sg => sg.id !== goal.id));
+                }}
+              >
+                Delete
+              </Button>
+
+            </div>
           </div>
         )}
       </div>
+      
 
       {/* Save and cancel / reset buttons */}
       { (!isEditing || hasChanges) &&

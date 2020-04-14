@@ -1,0 +1,19 @@
+@import "../../../../../../utils/colors";
+
+
+.create-experiment-step {
+}
+
+.create-experiment-step__content {
+  border-top: 1px solid $border-color;
+}
+
+.create-experiment-step__header {
+  background-color: $white;
+  color: $gray-800;
+}
+
+.create-experiment-step__header--active {
+  background-color: $green-villain;
+  color: $white;
+}

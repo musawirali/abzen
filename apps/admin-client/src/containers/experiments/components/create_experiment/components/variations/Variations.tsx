@@ -3,6 +3,10 @@ import { v4 as uuid} from 'uuid';
 import findIndex from 'lodash/findIndex';
 import map from 'lodash/map';
 
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 export interface NewVariation {
   id: string;
   name: string;
@@ -58,52 +62,52 @@ export const Variations = (props: VariationsPropsType) => {
 
   return (
     <div>
-      <form onSubmit={onSubmit}>
 
-        <div>
-          { map(variations, (variation, idx) =>
-            <div key={variation.id}>
-              <div>
-                Variation #{idx} {idx === 0 && '(Control)'}
-              </div>
-              <div>
-                <input
-                  type="text"
-                  value={variation.name}
-                  onChange={(evt) => {
+      <Form onSubmit={onSubmit}>
+        { map(variations, (variation, idx) =>
+          <Form.Group controlId="variation">
+            <Form.Label>Variation #{idx} {idx === 0 && '(Control)'}</Form.Label>
+            <div className="d-flex">
+              <Form.Control
+                type="text"
+                placeholder="Name of the variation"
+                value={variation.name}
+                onChange={(evt) => {
+                  const newVariations = [...variations];
+                  newVariations[idx].name = evt.target.value;
+                  setVariations(newVariations);
+                }}
+                disabled={idx === 0}
+              />
+              { idx > 1 &&
+                <Button
+                  className="ml-2"
+                  variant="outline-danger"
+                  onClick={() => {
                     const newVariations = [...variations];
-                    newVariations[idx].name = evt.target.value;
+                    newVariations.splice(idx, 1);
                     setVariations(newVariations);
                   }}
-                  disabled={idx === 0}
-                />
-                { idx > 1 &&
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const newVariations = [...variations];
-                      newVariations.splice(idx, 1);
-                      setVariations(newVariations);
-                    }}
-                  >
-                    X
-                  </button>
-                }
-              </div>
+                >
+                  Delete
+                </Button>
+              }
+
             </div>
-          )}
+          </Form.Group>
+        )}
 
-          <div>
-            <button
-              onClick={() => {
-                setVariations([...variations, { id: uuid(), name: '' } ]);
-              }}
-            >
-              Add new variation
-            </button>
-          </div>
-        </div>
+        <Button
+          className="mb-3"
+          variant="link"
+          onClick={() => {
+            setVariations([...variations, { id: uuid(), name: '' } ]);
+          }}
+        >
+          + Add new variation
+        </Button>
 
+        {/* TODO: This has to become a separate component for each of the steps */}
         <div>
           <button disabled={!isValid}>
             Continue
@@ -112,7 +116,10 @@ export const Variations = (props: VariationsPropsType) => {
             Cancel & delete
           </button>
         </div>
-      </form>
+
+
+      </Form>
+
     </div>
   );
 };

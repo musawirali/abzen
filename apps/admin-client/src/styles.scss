@@ -44,3 +44,9 @@
   width: 140px;
   height: auto;
 }
+
+.box {
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+  overflow: hidden;
+}

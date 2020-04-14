@@ -5,7 +5,7 @@ export const StepContainer: FunctionComponent<{}> = (props) => {
 
   return (
     <div
-      className="mb-4"
+      className="box mb-2"
     >
       {children}
     </div>

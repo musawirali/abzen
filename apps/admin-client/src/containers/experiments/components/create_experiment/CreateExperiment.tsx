@@ -16,6 +16,11 @@ import { Goals, GoalInfo } from '../goals/Goals';
 import { TrafficAllocation, TrafficAllocationInfo } from '../traffic_allocation/TrafficAllocation';
 import { StatisticalSignificance } from './components/statistical_significance/StatisticalSignificance';
 
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+
 enum CreateExperimentStep {
   None,
   Basics,
@@ -179,112 +184,119 @@ export const CreateExperiment = (props: CreateExperimentPropsType) => {
   }, [error]);
 
   return (
-    <div>
-      Setup new experiment
+    <Container className="pt-5">
+      <Row>
+        <Col>
+          <h4>
+            Setup new experiment
+          </h4>
+          
+          <div className="mt-4">
+            {/* Basics */}
+            <StepContainer>
+              <Step
+                title="Basics"
+                index={0}
+                active={step === CreateExperimentStep.Basics}
+                onClick={() => { gotoStep(CreateExperimentStep.Basics); }}
+              >
+                <Basics
+                  data={basicInfo}
+                  onCancel={onCancel}
+                  onNext={onBasicNext}
+                />
+              </Step>
+            </StepContainer>
 
-      <div className="mt-4">
-        {/* Basics */}
-        <StepContainer>
-          <Step
-            title="Basics"
-            index={0}
-            active={step === CreateExperimentStep.Basics}
-            onClick={() => { gotoStep(CreateExperimentStep.Basics); }}
-          >
-            <Basics
-              data={basicInfo}
-              onCancel={onCancel}
-              onNext={onBasicNext}
-            />
-          </Step>
-        </StepContainer>
+            {/* Variations */}
+            <StepContainer>
+              <Step
+                title="Variations"
+                index={1}
+                active={step === CreateExperimentStep.Variations}
+                onClick={() => { gotoStep(CreateExperimentStep.Variations); }}
+              >
+                <Variations
+                  data={variationInfo}
+                  onCancel={onCancel}
+                  onNext={onVariationsNext}
+                />
+              </Step>
+            </StepContainer>
 
-        {/* Variations */}
-        <StepContainer>
-          <Step
-            title="Variations"
-            index={1}
-            active={step === CreateExperimentStep.Variations}
-            onClick={() => { gotoStep(CreateExperimentStep.Variations); }}
-          >
-            <Variations
-              data={variationInfo}
-              onCancel={onCancel}
-              onNext={onVariationsNext}
-            />
-          </Step>
-        </StepContainer>
+            {/* Goals */}
+            <StepContainer>
+              <Step
+                title="Goals"
+                index={2}
+                active={step === CreateExperimentStep.Goals}
+                onClick={() => { gotoStep(CreateExperimentStep.Goals); }}
+              >
+                <Goals
+                  data={goalInfo}
+                  onCancel={onCancel}
+                  onNext={onGoalsNext}
+                />
+              </Step>
+            </StepContainer>
 
-        {/* Goals */}
-        <StepContainer>
-          <Step
-            title="Goals"
-            index={2}
-            active={step === CreateExperimentStep.Goals}
-            onClick={() => { gotoStep(CreateExperimentStep.Goals); }}
-          >
-            <Goals
-              data={goalInfo}
-              onCancel={onCancel}
-              onNext={onGoalsNext}
-            />
-          </Step>
-        </StepContainer>
+            {/* Traffic Allocation */}
+            <StepContainer>
+              <Step
+                title="Traffic Allocation"
+                index={3}
+                active={step === CreateExperimentStep.TrafficAllocation}
+                onClick={() => { gotoStep(CreateExperimentStep.TrafficAllocation); }}
+              >
+                <TrafficAllocation
+                  variations={variationInfo?.variations || []}
+                  data={trafficAllocationInfo}
+                  onCancel={onCancel}
+                  onNext={onTrafficAllocationNext}
+                />
+              </Step>
+            </StepContainer>
 
-        {/* Traffic Allocation */}
-        <StepContainer>
-          <Step
-            title="Traffic Allocation"
-            index={3}
-            active={step === CreateExperimentStep.TrafficAllocation}
-            onClick={() => { gotoStep(CreateExperimentStep.TrafficAllocation); }}
-          >
-            <TrafficAllocation
-              variations={variationInfo?.variations || []}
-              data={trafficAllocationInfo}
-              onCancel={onCancel}
-              onNext={onTrafficAllocationNext}
-            />
-          </Step>
-        </StepContainer>
+            {/* Statistical Significance */}
+            <StepContainer>
+              <Step
+                title="Statistical Significance"
+                index={4}
+                active={step === CreateExperimentStep.StatiscalSignificance}
+                onClick={() => { gotoStep(CreateExperimentStep.StatiscalSignificance); }}
+              >
+                <StatisticalSignificance
+                  onCancel={onCancel}
+                  onNext={onStatisticalSignificanceNext}
+                />
+              </Step>
+            </StepContainer>
+          </div>
 
-        {/* Statistical Significance */}
-        <StepContainer>
-          <Step
-            title="Statistical Significance"
-            index={4}
-            active={step === CreateExperimentStep.StatiscalSignificance}
-            onClick={() => { gotoStep(CreateExperimentStep.StatiscalSignificance); }}
-          >
-            <StatisticalSignificance
-              onCancel={onCancel}
-              onNext={onStatisticalSignificanceNext}
-            />
-          </Step>
-        </StepContainer>
-      </div>
+          { step === CreateExperimentStep.None &&
+            <div className="mt-4">
+              <div>Thats it for now!</div>
+              <button
+                disabled={!isValid}
+                onClick={() => { doCreateExperiment(); }}
+              >
+                Create experiment
+              </button>
 
-      { step === CreateExperimentStep.None &&
-        <div className="mt-4">
-          <div>Thats it for now!</div>
-          <button
-            disabled={!isValid}
-            onClick={() => { doCreateExperiment(); }}
-          >
-            Create experiment
-          </button>
+              <button onClick={onCancel}>
+                Cancel & delete
+              </button>
 
-          <button onClick={onCancel}>
-            Cancel & delete
-          </button>
-
-          { displayError &&
-            <div>
-              {displayError}
+              { displayError &&
+                <div>
+                  {displayError}
+                </div>
+              }
             </div>
           }
-        </div>
-      }
-    </div>
+
+        </Col>
+      </Row>
+    </Container>
   );
 };
