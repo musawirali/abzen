@@ -44,9 +44,9 @@ export enum ExperimentType {
 }
 
 export enum ExperimentStatus {
-  NotStarted = 'not_started',
-  Running = 'running',
-  Paused = 'paused',
+  NotStarted = 'NotStarted',
+  Running = 'Running',
+  Paused = 'Paused',
 }
 
 export interface Experiment {

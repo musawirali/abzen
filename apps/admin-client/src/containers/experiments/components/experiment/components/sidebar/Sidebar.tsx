@@ -9,11 +9,12 @@ import './style.scss';
 
 interface SidebarPropsType {
   experiment: Experiment;
+  updateStatus: (status: ExperimentStatus) => void;
   path: string;
 }
 
 export const Sidebar = (props: SidebarPropsType) => {
-  const { path, experiment: { id, status, name, info, project, goals, variations } } = props;
+  const { path, updateStatus, experiment: { id, status, name, info, project, goals, variations } } = props;
 
   return (
     <div className="experiment-sidebar-sticky pt-5">
@@ -38,7 +39,13 @@ export const Sidebar = (props: SidebarPropsType) => {
           </InputGroup>
 
           <div>
-            <Button block className="mb-4">
+            <Button
+              block
+              className="mb-4"
+              onClick={() => {
+                updateStatus(status === ExperimentStatus.Running ? ExperimentStatus.Paused : ExperimentStatus.Running)
+              }}
+            >
               {status === ExperimentStatus.Running ? 'Pause' : 'Start'} experiment
             </Button>
           </div>

@@ -11,7 +11,7 @@ import { Basics, BasicInfo } from '../basics/Basics';
 
 import Container from 'react-bootstrap/Container';
 
-import { ExperimentQueryData, EXPERIMENT_QUERY, UPDATE_EXPERIMENT } from './graphql/experiment';
+import { ExperimentQueryData, EXPERIMENT_QUERY, UPDATE_EXPERIMENT, ExperimentStatus } from './graphql/experiment';
 import './style.css';
 
 /**
@@ -102,6 +102,24 @@ export const Experiment = () => {
   }, [id, updateMut]);
 
   /**
+   * Function for toggling experiment status between running and paused.
+   */
+  const updateStatus = useCallback((status: ExperimentStatus) => {
+    updateMut({
+      variables: {
+        input: {
+          id,
+          status,
+        },
+      },
+      refetchQueries: [{
+        query: EXPERIMENT_QUERY,
+        variables: { id },
+      }],
+    });
+  }, [id, updateMut]);
+
+  /**
    * Extract goals data.
    */
   const goals = useMemo(() => {
@@ -148,7 +166,11 @@ export const Experiment = () => {
       <div
         className="experiment-sidebar"
       >
-        <Sidebar experiment={data.experiment} path={makePath()} />
+        <Sidebar
+          experiment={data.experiment}
+          updateStatus={updateStatus}
+          path={makePath()}
+        />
       </div>
 
       {/* Content */}

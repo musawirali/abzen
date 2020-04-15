@@ -12,11 +12,11 @@ import includes from 'lodash/includes';
 import sumBy from 'lodash/sumBy';
 
 import {
-  Experiment as ExperimentModel,
+  Experiment as ExperimentModel, ExperimentStatus,
   Goal as GoalModel,
   Variation as VariationModel,
 } from '../../models';
-import { Experiment } from '../types/experiment';
+import { Experiment, GQLExperimentStatus } from '../types/experiment';
 
 interface UpdateExperimentInput {
   id: string;
@@ -31,6 +31,7 @@ interface UpdateExperimentInput {
     trafficAllocation: number;
   }[] | null,
   trafficAllocation: number | null;
+  status: ExperimentStatus | null;
 }
 
 interface UpdateExperimentOutput {
@@ -78,6 +79,10 @@ const config: MutationConfig = {
       description: 'Traffic allocation for experiment',
       type: GraphQLInt,
     },
+    status: {
+      description: 'Status of the experiment',
+      type: GQLExperimentStatus,
+    },
   },
   outputFields: {
     experiment: {
@@ -93,6 +98,7 @@ const config: MutationConfig = {
       goalIDs, primaryGoalID,
       variations, trafficAllocation,
       name, info, projectID,
+      status,
     } = args;
 
     // Create DB records
@@ -239,6 +245,13 @@ const config: MutationConfig = {
         name,
         info,
         projectID,
+      });
+    }
+
+    // Update status
+    if (status) {
+      await experiment.update({
+        status,
       });
     }
 
