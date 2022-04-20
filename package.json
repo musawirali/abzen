@@ -30,7 +30,7 @@
     "bootstrap": "^4.4.1",
     "commander": "^4.1.1",
     "connect-redis": "^4.0.4",
-    "convict": "^5.2.0",
+    "convict": "^6.2.2",
     "cors": "^2.8.5",
     "document-register-element": "1.13.1",
     "express": "^4.17.1",
