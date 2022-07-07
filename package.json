@@ -38,7 +38,7 @@
     "express-winston": "^4.0.3",
     "graphql": "^14.6.0",
     "graphql-relay": "^0.6.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pg": "^7.18.2",
