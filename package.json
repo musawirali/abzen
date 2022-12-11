@@ -33,7 +33,7 @@
     "convict": "^5.2.0",
     "cors": "^2.8.5",
     "document-register-element": "1.13.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "express-winston": "^4.0.3",
     "graphql": "^14.6.0",
