@@ -23,7 +23,7 @@ jobs:
         WITH_V: true
 
     - name: Build and publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@master
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
         name: musawirali/abzen/${{ steps.tagger-step.outputs.new_tag }}
         username: musawirali
